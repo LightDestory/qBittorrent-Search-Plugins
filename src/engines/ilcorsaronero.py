@@ -1,13 +1,13 @@
-#VERSION: 1.0
+#VERSION: 1.1
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 from helpers import retrieve_url
 from novaprinter import prettyPrinter
-import re
+import re, urllib.parse
 
 
 class ilcorsaronero(object):
-    url = 'https://ilcorsaronero.link'
+    url = 'https://ilcorsaronero.link/'
     name = 'Il Corsaro Nero'
     # TLDR; It is safer to force an 'all' research.
     # IlCorsaroNero's categories are very specific, qBittorent does not provide enought categories to implement a good filtering.
@@ -35,11 +35,11 @@ class ilcorsaronero(object):
                 self.pageResSize = resultSize
             for torrent in range(resultSize):
                 data = self.formatTemplate()
-                data['link'] = torrents[torrent][4]
-                data['name'] = torrents[torrent][0]
-                data['size'] = torrents[torrent][3]
-                data['seeds'] = torrents[torrent][1]
-                data['leech'] = torrents[torrent][2]
+                data['link'] = torrents[torrent][0]
+                data['name'] = torrents[torrent][1]
+                data['size'] = torrents[torrent][2]
+                data['seeds'] = torrents[torrent][3]
+                data['leech'] = torrents[torrent][4]
                 prettyPrinter(data)
 
         def findTorrents(self, html):
@@ -49,16 +49,15 @@ class ilcorsaronero(object):
             for tr in trs:
                 # Extract from the A node all the needed information
                 url_titles = re.search(
-                    r'<A class=\"tab\" HREF=\"(.+?)\" >(.+?)?</A>.+?([0-9]+\.[0-9]+ (TB|GB|MB|KB)).+?[0-9A-Z]{6}\'>([0-9]+).+?[0-9A-Z]{6}\'>([0-9]+)', tr)
+                    r'A class=\"tab\" HREF=\"(.+?)\" >(.+?)?</A>.+?([0-9\.\,]+ (TB|GB|MB|KB)).+?#[0-9a-zA-Z]{6}\'>([0-9]+)</font>.+?#[0-9a-zA-Z]{6}\'>([0-9]+)</font>', tr)
                 if url_titles:
                     name = url_titles.group(2) if url_titles.group(
                         2) else url_titles.group(1).split("/")[5]
-                    torrents.append([name, url_titles.group(5), url_titles.group(
-                        6), url_titles.group(3), url_titles.group(1)])
+                    torrents.append([urllib.parse.quote(url_titles.group(1)), name, url_titles.group(3).replace(",",""), url_titles.group(5), url_titles.group(6)])
             return torrents
 
     def download_torrent(self, info):
-        torrent_page = retrieve_url(info)
+        torrent_page = retrieve_url(urllib.parse.unquote(info))
         magnet_match = re.search(
             r'a class=\"forbtn magnet\" href=\"(.?magnet:.*?)\"', torrent_page)
         if magnet_match and magnet_match.groups():
@@ -71,7 +70,7 @@ class ilcorsaronero(object):
     def search(self, what, cat='all'):
         parser = self.HTMLParser(self.url)
         for currPage in range(0, self.max_pages):
-            url = '{0}/advsearch.php?search={1}&&page={2}'.format(
+            url = '{0}advsearch.php?search={1}&&page={2}'.format(
                 self.url, what, currPage)
             # Some replacements to format the html source
             html = retrieve_url(url).replace("	", "").replace(

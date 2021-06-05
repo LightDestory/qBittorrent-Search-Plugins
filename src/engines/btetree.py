@@ -1,10 +1,9 @@
-#VERSION: 1.0
+#VERSION: 1.1
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 from helpers import retrieve_url, download_file
 from novaprinter import prettyPrinter
-import re
-
+import re, urllib.parse
 
 class btetree(object):
     url = "http://bt.etree.org/"
@@ -46,14 +45,14 @@ class btetree(object):
             for tr in trs:
                 # Extract from the A node all the needed information
                 url_titles = re.search(
-                    r'<tr.+?details_link\" href=\"(.+?)\".+?<b>(.+?)</b>.+?([0-9]+\.[0-9]+ (TB|GB|MB|KB)).+?seeders\">([0-9]+).+?leechers\">([0-9]+)', tr)
+                    r'<tr.+?details_link\" href=\"(.+?)\".+?<b>(.+?)</b>.+?([0-9\,\.]+ (TB|GB|MB|KB)).+?seeders\">([0-9]+).+?leechers\">([0-9]+)', tr)
                 if url_titles:
-                    torrents.append(['{0}{1}'.format(self.url, url_titles.group(1)), url_titles.group(
-                        2), url_titles.group(3), url_titles.group(5), url_titles.group(6)])
+                    torrents.append([urllib.parse.quote('{0}{1}'.format(self.url, url_titles.group(1))), url_titles.group(
+                        2), url_titles.group(3).replace(",",""), url_titles.group(5), url_titles.group(6)])
             return torrents
 
     def download_torrent(self, info):
-        torrent_page = retrieve_url(info)
+        torrent_page = retrieve_url(urllib.parse.unquote(info))
         magnet_match = re.search(
             r'.+?href=\"(.+?\.torrent)\"', torrent_page)
         if magnet_match and magnet_match.groups():

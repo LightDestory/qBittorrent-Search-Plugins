@@ -1,9 +1,9 @@
-#VERSION: 1.0
+#VERSION: 1.1
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 from helpers import retrieve_url
 from novaprinter import prettyPrinter
-import re
+import re, urllib.parse
 
 
 class ettv(object):
@@ -49,14 +49,14 @@ class ettv(object):
             for tr in trs:
                 # Extract from the A node all the needed information
                 url_titles = re.search(
-                    r'<tr class=\'\'>.+?torrent\" href=\"/(.+?)\".+?<b>(.+?)</b></a>.+?([0-9]+\.[0-9]+ (TB|GB|MB|KB)).+?green\'><b>([0-9,]+).+?a50707\'><b>([0-9,]+)', tr)
+                    r'<tr class=\'\'>.+?torrent\" href=\"/(.+?)\".+?<b>(.+?)</b></a>.+?([0-9\.\,]+ (TB|GB|MB|KB)).+?green\'><b>([0-9,]+).+?a50707\'><b>([0-9,]+)', tr)
                 if url_titles:
-                    torrents.append(['{0}{1}'.format(self.url, url_titles.group(1)), url_titles.group(
-                        2), url_titles.group(3), url_titles.group(5), url_titles.group(6)])
+                    torrents.append([urllib.parse.quote('{0}{1}'.format(self.url, url_titles.group(1))), url_titles.group(
+                        2), url_titles.group(3).replace(",",""), url_titles.group(5), url_titles.group(6)])
             return torrents
 
     def download_torrent(self, info):
-        torrent_page = retrieve_url(info)
+        torrent_page = retrieve_url(urllib.parse.unquote(info))
         magnet_match = re.search(
             r'a href=\"(.?magnet:.*?)\"', torrent_page)
         if magnet_match and magnet_match.groups():
