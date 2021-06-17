@@ -1,35 +1,41 @@
-#VERSION: 1.1
+# VERSION: 1.2
 # AUTHORS: LightDestory (https://github.com/LightDestory)
+
+import re
+import urllib.parse
 
 from helpers import retrieve_url
 from novaprinter import prettyPrinter
-import re, urllib.parse
 
 
 class ilcorsaronero(object):
     url = 'https://ilcorsaronero.link/'
     name = 'Il Corsaro Nero'
-    # TLDR; It is safer to force an 'all' research.
-    # IlCorsaroNero's categories are very specific, qBittorent does not provide enought categories to implement a good filtering.
-    # For example, qBittorrent provides only a generic 'games' category meanwhile the website uses: pc, xbox and playstation.
+    """ 
+    ***TLDR; It is safer to force an 'all' research***
+        IlCorsaroNero's categories are very specific
+        qBittorrent does not provide enough categories to implement a good filtering.
+        For example, qBittorrent provides only a generic 'games' category meanwhile the website uses: pc, xbox and so on
+    """
     supported_categories = {'all': '0'}
     # IlCorsaroNero's search divided into pages, so we are going to set a limit on how many pages to read
-    max_pages = 8
+    max_pages = 10
 
-    class HTMLParser():
+    class HTMLParser:
 
         def __init__(self, url):
             self.url = url
             self.pageResSize = 0
 
         def formatTemplate(self):
-            return {'link': '-1', 'name': '-1', 'size': '-1', 'seeds': '-1', 'leech': '-1', 'engine_url': self.url, 'desc_link': '-1'}
+            return {'link': '-1', 'name': '-1', 'size': '-1', 'seeds': '-1', 'leech': '-1', 'engine_url': self.url,
+                    'desc_link': '-1'}
 
         def feed(self, html):
             self.pageResSize = 0
             torrents = self.findTorrents(html)
             resultSize = len(torrents)
-            if(resultSize == 0):
+            if resultSize == 0:
                 return
             else:
                 self.pageResSize = resultSize
@@ -49,7 +55,8 @@ class ilcorsaronero(object):
             for tr in trs:
                 # Extract from the A node all the needed information
                 url_titles = re.search(
-                    r'A class=\"tab\" HREF=\"(.+?)\" >(.+?)?</A>.+?([0-9\.\,]+ (TB|GB|MB|KB)).+?#[0-9a-zA-Z]{6}\'>([0-9]+)</font>.+?#[0-9a-zA-Z]{6}\'>([0-9]+)</font>', tr)
+                    r'A class=\"tab\" HREF=\"(.+?)\" >(.+?)?</A>.+?([0-9\.\,]+ (TB|GB|MB|KB)).+?#[0-9a-zA-Z]{6}\'>([0-9]+)<.+?#[0-9a-zA-Z]{6}\'>([0-9]+)',
+                    tr)
                 if url_titles:
                     name = url_titles.group(2) if url_titles.group(
                         2) else url_titles.group(1).split("/")[5]
@@ -59,7 +66,7 @@ class ilcorsaronero(object):
     def download_torrent(self, info):
         torrent_page = retrieve_url(urllib.parse.unquote(info))
         magnet_match = re.search(
-            r'a class=\"forbtn magnet\" href=\"(.?magnet:.*?)\"', torrent_page)
+            r'\"(magnet:.*?)\"', torrent_page)
         if magnet_match and magnet_match.groups():
             print('{0} {1}'.format(magnet_match.groups()[0], info))
         else:
