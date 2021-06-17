@@ -21,6 +21,7 @@ If a plugin stops to work or you need a specific plugin, let me know by opening 
 | ![ETTV](./src/engines/ettv.ico) ETTV                            | 1.2     | 17/06/2021   | :heavy_check_mark: |
 | ![GloTorrents](./src/engines/glotorrents.ico) GloTorrents       | 1.1     | 17/06/2021   | :heavy_check_mark: |
 | ![IlCorsaroNero](./src/engines/ilcorsaronero.ico) IlCorsaroNero | 1.2     | 17/06/2021   | :heavy_check_mark: |
+| ![IlCorsaroNero](./src/engines/rockbox.ico) RockBox             | 1.0     | 17/06/2021   | :heavy_check_mark: |
 
 ## Install and Usage
 
