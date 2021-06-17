@@ -16,12 +16,12 @@ If a plugin stops to work or you need a specific plugin, let me know by opening 
 
 | Plugin                                                          | Version | Last Updated | Working?           |
 | --------------------------------------------------------------- | ------- | ------------ | ------------------ |
-| ![btetree](./src/engines/academictorrents.ico) AcademicTorrents | 1.0     | 17/06/2021   | :heavy_check_mark: |
-| ![btetree](./src/engines/btetree.ico) btetree                   | 1.2     | 17/06/2021   | :heavy_check_mark: |
-| ![ETTV](./src/engines/ettv.ico) ETTV                            | 1.2     | 17/06/2021   | :heavy_check_mark: |
-| ![GloTorrents](./src/engines/glotorrents.ico) GloTorrents       | 1.1     | 17/06/2021   | :heavy_check_mark: |
-| ![IlCorsaroNero](./src/engines/ilcorsaronero.ico) IlCorsaroNero | 1.2     | 17/06/2021   | :heavy_check_mark: |
-| ![IlCorsaroNero](./src/engines/rockbox.ico) RockBox             | 1.0     | 17/06/2021   | :heavy_check_mark: |
+| ![btetree](./src/engines/academictorrents.png) AcademicTorrents | 1.0     | 17/06/2021   | :heavy_check_mark: |
+| ![btetree](./src/engines/btetree.png) btetree                   | 1.2     | 17/06/2021   | :heavy_check_mark: |
+| ![ETTV](./src/engines/ettv.png) ETTV                            | 1.2     | 17/06/2021   | :heavy_check_mark: |
+| ![GloTorrents](./src/engines/glotorrents.png) GloTorrents       | 1.1     | 17/06/2021   | :heavy_check_mark: |
+| ![IlCorsaroNero](./src/engines/ilcorsaronero.png) IlCorsaroNero | 1.2     | 17/06/2021   | :heavy_check_mark: |
+| ![IlCorsaroNero](./src/engines/rockbox.png) RockBox             | 1.0     | 17/06/2021   | :heavy_check_mark: |
 
 ## Install and Usage
 
