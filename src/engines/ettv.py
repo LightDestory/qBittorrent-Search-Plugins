@@ -49,7 +49,6 @@ class ettv(object):
 
         def __findTorrents(self, html):
             torrents = []
-            # Find all TR nodes with class odd or odd2
             trs = re.findall(r'<tr class=\'\'>.*?</tr>', html)
             for tr in trs:
                 # Extract from the A node all the needed information

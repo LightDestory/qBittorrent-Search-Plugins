@@ -47,7 +47,6 @@ class glotorrents(object):
 
         def __findTorrents(self, html):
             torrents = []
-            # Find all TR nodes with class odd or odd2
             trs = re.findall(
                 r'<tr class=\'t-row\'><td class=\'ttable_col1\' align=\'center\' valign=\'middle\'>.+?</tr>', html)
             for tr in trs:

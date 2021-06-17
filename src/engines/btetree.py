@@ -42,7 +42,6 @@ class btetree(object):
 
         def __findTorrents(self, html):
             torrents = []
-            # Find all TR nodes with class odd or odd2
             trs = re.findall(
                 r'<tr align=\"right\" bgcolor=\"#ffffff\">.+?</tr>', html)
             for tr in trs:
