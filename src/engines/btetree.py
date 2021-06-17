@@ -58,10 +58,10 @@ class btetree(object):
 
     def download_torrent(self, info):
         torrent_page = retrieve_url(urllib.parse.unquote(info))
-        magnet_match = re.search(
+        file_link = re.search(
             r'.+?href=\"(.+?\.torrent)\"', torrent_page)
-        if magnet_match and magnet_match.groups():
-            print(download_file(self.url+magnet_match.groups()[0]))
+        if file_link and file_link.groups():
+            print(download_file(self.url + file_link.groups()[0]))
         else:
             raise Exception('Error, please fill a bug report!')
 
