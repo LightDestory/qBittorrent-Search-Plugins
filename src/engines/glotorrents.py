@@ -1,33 +1,37 @@
-#VERSION: 1.0
+# VERSION: 1.1
 # AUTHORS: LightDestory (https://github.com/LightDestory)
+
+import re
+import urllib.parse
 
 from helpers import retrieve_url
 from novaprinter import prettyPrinter
-import re, urllib.parse
 
 
 class glotorrents(object):
     url = 'https://www.gtdb.to/'
     name = 'GloTorrents'
-    supported_categories = {'all': '0', 'movies': '1', 'tv': '41', 'music': '22', 'games': '10', 'anime': '28', 'software': '18'}
+    supported_categories = {'all': '0', 'movies': '1', 'tv': '41', 'music': '22', 'games': '10', 'anime': '28',
+                            'software': '18'}
 
-    # IlCorsaroNero's search divided into pages, so we are going to set a limit on how many pages to read
-    max_pages = 8
+    # GloTorrents' search divided into pages, so we are going to set a limit on how many pages to read
+    max_pages = 10
 
-    class HTMLParser():
+    class HTMLParser:
 
         def __init__(self, url):
             self.url = url
             self.pageResSize = 0
 
         def formatTemplate(self):
-            return {'link': '-1', 'name': '-1', 'size': '-1', 'seeds': '-1', 'leech': '-1', 'engine_url': self.url, 'desc_link': '-1'}
+            return {'link': '-1', 'name': '-1', 'size': '-1', 'seeds': '-1', 'leech': '-1', 'engine_url': self.url,
+                    'desc_link': '-1'}
 
         def feed(self, html):
             self.pageResSize = 0
             torrents = self.findTorrents(html)
             resultSize = len(torrents)
-            if(resultSize == 0):
+            if resultSize == 0:
                 return
             else:
                 self.pageResSize = resultSize
