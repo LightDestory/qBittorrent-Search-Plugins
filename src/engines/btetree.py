@@ -39,6 +39,7 @@ class btetree(object):
                 data['size'] = torrents[torrent][2]
                 data['seeds'] = torrents[torrent][3]
                 data['leech'] = torrents[torrent][4]
+                data['desc_link'] = urllib.parse.unquote(torrents[torrent][0])
                 prettyPrinter(data)
 
         def findTorrents(self, html):

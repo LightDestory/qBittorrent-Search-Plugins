@@ -33,6 +33,7 @@ class academictorrents(object):
             data['size'] = torrent['size']
             data['seeds'] = torrent['mirrors']
             data['leech'] = torrent['downloaders']
+            data['desc_link'] = urllib.parse.unquote(data['link'])
             prettyPrinter(data)
 
     def download_torrent(self, info):
