@@ -20,29 +20,27 @@ class btetree(object):
             self.url = url
             self.pageResSize = 0
 
-        def formatTemplate(self):
-            return {'link': '-1', 'name': '-1', 'size': '-1', 'seeds': '-1', 'leech': '-1', 'engine_url': self.url,
-                    'desc_link': '-1'}
-
         def feed(self, html):
             self.pageResSize = 0
-            torrents = self.findTorrents(html)
+            torrents = self.__findTorrents(html)
             resultSize = len(torrents)
             if resultSize == 0:
                 return
             else:
                 self.pageResSize = resultSize
             for torrent in range(resultSize):
-                data = self.formatTemplate()
-                data['link'] = torrents[torrent][0]
-                data['name'] = torrents[torrent][1]
-                data['size'] = torrents[torrent][2]
-                data['seeds'] = torrents[torrent][3]
-                data['leech'] = torrents[torrent][4]
-                data['desc_link'] = urllib.parse.unquote(torrents[torrent][0])
+                data = {
+                    'link': torrents[torrent][0],
+                    'name': torrents[torrent][1],
+                    'size': torrents[torrent][2],
+                    'seeds': torrents[torrent][3],
+                    'leech': torrents[torrent][4],
+                    'engine_url': self.url,
+                    'desc_link': urllib.parse.unquote(torrents[torrent][0])
+                }
                 prettyPrinter(data)
 
-        def findTorrents(self, html):
+        def __findTorrents(self, html):
             torrents = []
             # Find all TR nodes with class odd or odd2
             trs = re.findall(
@@ -50,10 +48,13 @@ class btetree(object):
             for tr in trs:
                 # Extract from the A node all the needed information
                 url_titles = re.search(
-                    r'<tr.+?details_link\" href=\"(.+?)\".+?<b>(.+?)</b>.+?([0-9\,\.]+ (TB|GB|MB|KB)).+?seeders\">([0-9]+).+?leechers\">([0-9]+)', tr)
+                    r'<tr.+?details_link\" href=\"(.+?)\".+?<b>(.+?)</b>.+?([0-9\,\.]+ (TB|GB|MB|KB)).+?seeders\">([0-9,]+).+?leechers\">([0-9,]+)',
+                    tr)
                 if url_titles:
-                    torrents.append([urllib.parse.quote('{0}{1}'.format(self.url, url_titles.group(1))), url_titles.group(
-                        2), url_titles.group(3).replace(",",""), url_titles.group(5), url_titles.group(6)])
+                    torrents.append(
+                        [urllib.parse.quote('{0}{1}'.format(self.url, url_titles.group(1))), url_titles.group(
+                            2), url_titles.group(3).replace(",", ""), url_titles.group(5).replace(",", ""),
+                         url_titles.group(6).replace(",", "")])
             return torrents
 
     def download_torrent(self, info):

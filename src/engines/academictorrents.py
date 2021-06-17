@@ -21,25 +21,23 @@ class academictorrents(object):
     """
     supported_categories = {'all': '0'}
 
-    def formatTemplate(self):
-        return {'link': '-1', 'name': '-1', 'size': '-1', 'seeds': '-1', 'leech': '-1', 'engine_url': self.url,
-                'desc_link': '-1'}
-
     def parseJSON(self, collection):
         for torrent in collection:
-            data = self.formatTemplate()
-            data['link'] = urllib.parse.quote(torrent['url'])
-            data['name'] = torrent['name']
-            data['size'] = torrent['size']
-            data['seeds'] = torrent['mirrors']
-            data['leech'] = torrent['downloaders']
-            data['desc_link'] = urllib.parse.unquote(data['link'])
+            data = {
+                'link': urllib.parse.quote(torrent['url']),
+                'name': torrent['name'],
+                'size': torrent['size'],
+                'seeds': torrent['mirrors'],
+                'leech': torrent['downloaders'],
+                'engine_url': self.url,
+                'desc_link': torrent['url']
+            }
             prettyPrinter(data)
 
     def download_torrent(self, info):
-        hash = urllib.parse.unquote(info).split("/")[-1]
-        if len(hash) == 40:
-            print(download_file('{0}/download/{1}.torrent'.format(self.url, hash)))
+        infoHash = urllib.parse.unquote(info).split("/")[-1]
+        if len(infoHash) == 40:
+            print(download_file('{0}/download/{1}.torrent'.format(self.url, infoHash)))
         else:
             raise Exception('Error, please fill a bug report!')
 
