@@ -62,7 +62,7 @@ class yourbittorrent(object):
     def download_torrent(self, info):
         torrent_page = retrieve_url(urllib.parse.unquote(info))
         file_link = re.search(
-            r'(/down/.+?\.torrent)\"', torrent_page)
+            r'(down/.+?\.torrent)', torrent_page)
         if file_link and file_link.groups():
             print(download_file(self.url + file_link.groups()[0]))
         else:
