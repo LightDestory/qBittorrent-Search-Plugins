@@ -1,9 +1,12 @@
-#VERSION: 1.1
+# VERSION: 1.2
 # AUTHORS: LightDestory (https://github.com/LightDestory)
+
+import re
+import urllib.parse
 
 from helpers import retrieve_url, download_file
 from novaprinter import prettyPrinter
-import re, urllib.parse
+
 
 class btetree(object):
     url = "http://bt.etree.org/"
@@ -11,20 +14,21 @@ class btetree(object):
     supported_categories = {'all': '0'}
     max_pages = 10
 
-    class HTMLParser():
+    class HTMLParser:
 
         def __init__(self, url):
             self.url = url
             self.pageResSize = 0
 
         def formatTemplate(self):
-            return {'link': '-1', 'name': '-1', 'size': '-1', 'seeds': '-1', 'leech': '-1', 'engine_url': self.url, 'desc_link': '-1'}
+            return {'link': '-1', 'name': '-1', 'size': '-1', 'seeds': '-1', 'leech': '-1', 'engine_url': self.url,
+                    'desc_link': '-1'}
 
         def feed(self, html):
             self.pageResSize = 0
             torrents = self.findTorrents(html)
             resultSize = len(torrents)
-            if(resultSize == 0):
+            if resultSize == 0:
                 return
             else:
                 self.pageResSize = resultSize

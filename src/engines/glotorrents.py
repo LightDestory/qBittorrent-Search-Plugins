@@ -1,4 +1,4 @@
-# VERSION: 1.1
+# VERSION: 1.2
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
@@ -62,7 +62,7 @@ class glotorrents(object):
     def download_torrent(self, info):
         torrent_page = retrieve_url(urllib.parse.unquote(info))
         magnet_match = re.search(
-            r'(magnet:.+?)\"', torrent_page)
+            r'\"(magnet:.*?)\"', torrent_page)
         if magnet_match and magnet_match.groups():
             print('{0} {1}'.format(magnet_match.groups()[0], info))
         else:
