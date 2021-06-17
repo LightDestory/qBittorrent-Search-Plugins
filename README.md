@@ -22,6 +22,7 @@ If a plugin stops to work or you need a specific plugin, let me know by opening 
 | ![GloTorrents](./src/engines/glotorrents.png) GloTorrents       | 1.1     | 17/06/2021   | :heavy_check_mark: |
 | ![IlCorsaroNero](./src/engines/ilcorsaronero.png) IlCorsaroNero | 1.2     | 17/06/2021   | :heavy_check_mark: |
 | ![IlCorsaroNero](./src/engines/rockbox.png) RockBox             | 1.0     | 17/06/2021   | :heavy_check_mark: |
+| ![IlCorsaroNero](./src/engines/snowfl.png) Snowfl               | 1.0     | 17/06/2021   | :heavy_check_mark: |
 
 ## Install and Usage
 
@@ -39,6 +40,8 @@ Some plugins can need some settings, please read carefully the *Notes* section.
 
       To use properly AcademicTorrents' plugins, please register an account on their website and paste your UID and API_KEY
       inside the python file, you can find on the head two empty strings to fill by yourself.
+- **Snowfl** is a torrent aggregator, there is not a fixed way to fetch the torrent. I tried to fix the in-app torrent
+  fetch implementing a generic magnet link fetch, but it doesn't work every time.
 
 ## Contributions and Testing
 
