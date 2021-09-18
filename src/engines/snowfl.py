@@ -1,4 +1,4 @@
-# VERSION: 1.0
+# VERSION: 1.1
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 # Based on gitDew work (https://github.com/gitDew/qbittorrent-snowfl-search-plugin)
@@ -40,10 +40,11 @@ class snowfl(object):
                 prettyPrinter(data)
 
         def __retrieveToken(self):
-            file_name = "b.min.js"
+            index_html = retrieve_url(self.url + "index.html")
+            file_name = re.findall(r'.+?\"(b.min.js\?.+)\"', index_html)[0]
             script = retrieve_url(self.url + file_name)
-            # Retrieving the 42-chars token
-            token = re.findall(r'\"(\w{42})\"', script)[0]
+            # Retrieving the token
+            token = re.findall(r'\"([a-zA-Z0-9]+)\",step,queryId,count,sort,topx,filters=\[\],sources=\[\],nsfwFilter=!1,loadingMore=!1,resultItems=', script)[0]
             return token
 
         def generateQuery(self, what):
@@ -64,5 +65,5 @@ class snowfl(object):
     # This function will be the one called by nova2.py
     def search(self, what, cat='all'):
         parser = self.Parser(self.url)
-        what = parser.generateQuery(what);
+        what = parser.generateQuery(what)
         parser.feed(json.loads(retrieve_url(what)))
