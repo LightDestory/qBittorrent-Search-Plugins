@@ -1,4 +1,4 @@
-# VERSION: 1.0
+# VERSION: 1.1
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
@@ -53,10 +53,11 @@ class yourbittorrent(object):
                     tr)
                 if url_titles:
                     torrents.append(
-                        [urllib.parse.quote('{0}{1}'.format(self.url, url_titles.group(1))), url_titles.group(
-                            2).replace("<b>", "").replace("</b>", ""), url_titles.group(3).replace(",", ""),
-                         url_titles.group(5).replace(",", ""),
-                         url_titles.group(6).replace(",", "")])
+                        [urllib.parse.quote('{0}{1}'.format(self.url, url_titles.group(1))),
+                        url_titles.group(2).replace("<b>", "").replace("</b>", "").replace('<span style=color:#39a8bb>', "").replace("</span>", ""),
+                        url_titles.group(3).replace(",", ""),
+                        url_titles.group(5).replace(",", ""),
+                        url_titles.group(6).replace(",", "")])
             return torrents
 
     def download_torrent(self, info):
