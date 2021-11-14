@@ -21,6 +21,7 @@ If a plugin stops to work or you need a specific plugin, let me know by opening 
 | ![ETTV](./src/engines/ettv.png) ETTV                                     | 1.2     | 17/06/2021   | :heavy_check_mark: |
 | ![GloTorrents](./src/engines/glotorrents.png) GloTorrents                | 1.1     | 17/06/2021   | :heavy_check_mark: |
 | ![IlCorsaroNero](./src/engines/ilcorsaronero.png) IlCorsaroNero          | 1.2     | 17/06/2021   | :heavy_check_mark: |
+| ![RARBG](./src/engines/rarbg.png) RARBG                                  | 1.0     | 14/11/2021   | :heavy_check_mark: |
 | ![RockBox](./src/engines/rockbox.png) RockBox                            | 1.1     | 18/09/2021   | :heavy_check_mark: |
 | ![Snowfl](./src/engines/snowfl.png) Snowfl                               | 1.0     | 17/06/2021   | :heavy_check_mark: |
 | ![ThePirateBay](./src/engines/thepiratebay.png) ThePirateBay             | 1.0     | 14/11/2021   | :heavy_check_mark: |
@@ -44,6 +45,8 @@ Some plugins can need some settings, please read carefully the *Notes* section.
       inside the python file, you can find on the head two empty strings to fill by yourself.
 - **Snowfl** is a torrent aggregator, there is not a fixed way to fetch the torrent. I tried to fix the in-app torrent
   fetch implementing a generic magnet link fetch, but it doesn't work every time.
+- **RARBG** uses an anti-spam system, if you perform a lot of queries on a short time the plugin will stop working until their system
+  removes you from a "alert" list
 
 ## Contributions and Testing
 
