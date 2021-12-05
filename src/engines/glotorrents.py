@@ -1,4 +1,4 @@
-# VERSION: 1.2
+# VERSION: 1.3
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
@@ -9,7 +9,7 @@ from novaprinter import prettyPrinter
 
 
 class glotorrents(object):
-    url = 'https://www.gtdb.to/'
+    url = 'https://glodls.to/'
     name = 'GloTorrents'
     supported_categories = {'all': '0', 'movies': '1', 'tv': '41', 'music': '22', 'games': '10', 'anime': '28',
                             'software': '18'}
