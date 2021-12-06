@@ -1,4 +1,4 @@
-# VERSION: 1.0
+# VERSION: 1.1
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
@@ -19,7 +19,7 @@ class rarbg(object):
     """
     supported_categories = {'all': '0'}
     # RARBG's search divided into pages, so we are going to set a limit on how many pages to read
-    max_pages = 10
+    max_pages = 5
 
     class HTMLParser:
 
