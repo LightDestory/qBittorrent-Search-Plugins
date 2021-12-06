@@ -21,7 +21,7 @@ If a plugin stops to work or you need a specific plugin, let me know by opening 
 | ![ETTV](./src/engines/ettv.png) ETTV                                     | 1.2     | 17/06/2021   | :heavy_check_mark: |
 | ![GloTorrents](./src/engines/glotorrents.png) GloTorrents                | 1.3     | 05/12/2021   | :heavy_check_mark: |
 | ![IlCorsaroNero](./src/engines/ilcorsaronero.png) IlCorsaroNero          | 1.2     | 17/06/2021   | :heavy_check_mark: |
-| ![RARBG](./src/engines/rarbg.png) RARBG                                  | 1.0     | 14/11/2021   | :heavy_check_mark: |
+| ![RARBG](./src/engines/rarbg.png) RARBG                                  | 1.1     | 06/12/2021   | :heavy_check_mark: |
 | ![RockBox](./src/engines/rockbox.png) RockBox                            | 1.0     | 17/06/2021   | :heavy_check_mark: |
 | ![Snowfl](./src/engines/snowfl.png) Snowfl                               | 1.1     | 18/09/2021   | :heavy_check_mark: |
 | ![ThePirateBay](./src/engines/thepiratebay.png) ThePirateBay             | 1.0     | 14/11/2021   | :heavy_check_mark: |
