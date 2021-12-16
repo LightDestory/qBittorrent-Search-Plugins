@@ -25,6 +25,7 @@ If a plugin stops to work or you need a specific plugin, let me know by opening 
 | ![RockBox](./src/engines/rockbox.png) RockBox                            | 1.0     | 17/06/2021   | :heavy_check_mark: |
 | ![Snowfl](./src/engines/snowfl.png) Snowfl                               | 1.1     | 18/09/2021   | :heavy_check_mark: |
 | ![ThePirateBay](./src/engines/thepiratebay.png) ThePirateBay             | 1.0     | 14/11/2021   | :heavy_check_mark: |
+| ![TNTVillageDump](./src/engines/tntvillagedump.png) TNTVillageDump       | 1.0     | 16/12/2021   | :heavy_check_mark: |
 | ![YourBittorrent](./src/engines/yourbittorrent.png) YourBittorrent       | 1.1     | 12/11/2021   | :heavy_check_mark: |
 
 ## Install and Usage
@@ -47,6 +48,7 @@ Some plugins can need some settings, please read carefully the *Notes* section.
   fetch implementing a generic magnet link fetch, but it doesn't work every time.
 - **RARBG** uses an anti-spam system, if you perform a lot of queries on a short time the plugin will stop working until their system
   removes you from a "alert" list
+- **TNTVillage** uses a emdebed dump so it is a bit fatty: 20MB of plugin!
 
 ## Contributions and Testing
 
