@@ -27,7 +27,7 @@ If a plugin stops to work or you need a specific plugin, let me know by opening 
 | ![Snowfl](./src/engines/snowfl.png) Snowfl                               | 1.1     | 18/09/2021   | :heavy_check_mark: |
 | ![ThePirateBay](./src/engines/thepiratebay.png) ThePirateBay             | 1.0     | 14/11/2021   | :heavy_check_mark: |
 | ![TNTVillageDump](./src/engines/tntvillagedump.png) TNTVillageDump       | 1.1     | 31/01/2022   | :heavy_check_mark: |
-| ![YourBittorrent](./src/engines/yourbittorrent.png) YourBittorrent       | 1.1     | 12/11/2021   | :heavy_check_mark: |
+| ![YourBittorrent](./src/engines/yourbittorrent.png) YourBittorrent       | 1.2     | 31/01/2022   | :heavy_check_mark: |
 
 ## Install and Usage
 

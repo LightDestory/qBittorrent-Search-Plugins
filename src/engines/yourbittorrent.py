@@ -1,4 +1,4 @@
-# VERSION: 1.1
+# VERSION: 1.2
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
@@ -75,8 +75,9 @@ class yourbittorrent(object):
         what = what.replace("%20", "-")
         parser = self.HTMLParser(self.url)
         for currPage in range(1, self.max_pages):
-            url = '{0}?q={1}&c={2}&page={3}'.format(
-                self.url, what, self.supported_categories[cat], currPage)
+            category = "" if cat == "all" else f'&c={self.supported_categories[cat]}'
+            url = '{0}?q={1}{2}&page={3}'.format(
+                self.url, what, category , currPage)
             # Some replacements to format the html source
             html = retrieve_url(url).replace("	", "").replace(
                 "\n", "").replace("\r", "")
