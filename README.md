@@ -10,6 +10,7 @@ If a plugin stops to work or you need a specific plugin, let me know by opening 
   - [Install and Usage](#install-and-usage)
   - [:book: Notes](#book-notes)
   - [Contributions and Testing](#contributions-and-testing)
+  - [Support](#support)
   - [:warning: License](#warning-license)
 
 ## Status
@@ -25,7 +26,7 @@ If a plugin stops to work or you need a specific plugin, let me know by opening 
 | ![RockBox](./src/engines/rockbox.png) RockBox                            | 1.0     | 17/06/2021   | :heavy_check_mark: |
 | ![Snowfl](./src/engines/snowfl.png) Snowfl                               | 1.1     | 18/09/2021   | :heavy_check_mark: |
 | ![ThePirateBay](./src/engines/thepiratebay.png) ThePirateBay             | 1.0     | 14/11/2021   | :heavy_check_mark: |
-| ![TNTVillageDump](./src/engines/tntvillagedump.png) TNTVillageDump       | 1.0     | 16/12/2021   | :heavy_check_mark: |
+| ![TNTVillageDump](./src/engines/tntvillagedump.png) TNTVillageDump       | 1.1     | 31/01/2022   | :heavy_check_mark: |
 | ![YourBittorrent](./src/engines/yourbittorrent.png) YourBittorrent       | 1.1     | 12/11/2021   | :heavy_check_mark: |
 
 ## Install and Usage
@@ -60,6 +61,13 @@ For comodity I have included the needed files requires to testing the plugins, t
 
 1. `cd ./src`
 2. > python ./nova2.py **search_engine** **category** **search keywords**
+
+## Support
+
+<p align="center">
+    <a href="https://coindrop.to/lightdestory" target="__blank"><img alt="Coindrop" title="Support me with a donation!"
+            src="https://img.shields.io/badge/-Support me with coindrop.to-yellowgreen?style=for-the-badge&logo=paypal&logoColor=white" /></a>
+</p>
 
 ## :warning: License
 
