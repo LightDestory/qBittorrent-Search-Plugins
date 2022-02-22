@@ -1,4 +1,4 @@
-# VERSION: 1.2
+# VERSION: 1.3
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
@@ -13,8 +13,8 @@ class yourbittorrent(object):
     name = 'YourBittorrent'
     supported_categories = {'all': '0', 'movies': '1', 'tv': '3', 'music': '2', 'games': '4', 'anime': '6',
                             'software': '5'}
-    # YourBittorrent's search divided into pages, so we are going to set a limit on how many pages to read
-    max_pages = 10
+    # YourBittorrent's page navigaitons is broken, we can fetch only 50 torrent. Use specific query
+    #max_pages = 10
 
     class HTMLParser:
 
@@ -74,14 +74,10 @@ class yourbittorrent(object):
     def search(self, what, cat='all'):
         what = what.replace("%20", "-")
         parser = self.HTMLParser(self.url)
-        for currPage in range(1, self.max_pages):
-            category = "" if cat == "all" else f'&c={self.supported_categories[cat]}'
-            url = '{0}?q={1}{2}&page={3}'.format(
-                self.url, what, category , currPage)
-            # Some replacements to format the html source
-            html = retrieve_url(url).replace("	", "").replace(
-                "\n", "").replace("\r", "")
-            parser.feed(html)
-            # if there are no results exit
-            if parser.pageResSize <= 0:
-                break
+        category = "" if cat == "all" else f'&c={self.supported_categories[cat]}'
+        url = '{0}?q={1}{2}'.format(
+            self.url, what, category)
+        # Some replacements to format the html source
+        html = retrieve_url(url).replace("	", "").replace(
+            "\n", "").replace("\r", "")
+        parser.feed(html)
