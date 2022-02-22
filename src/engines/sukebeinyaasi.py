@@ -23,8 +23,8 @@ except ImportError:
 
 # import qBT modules
 try:
-    from novaprinter import prettyPrinter
     from helpers import retrieve_url
+    from novaprinter import prettyPrinter
 except:
     pass
 
