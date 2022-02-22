@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #VERSION: 1.1
-#AUTHORS: Joost Bremmer (toost.b@gmail.com)
+# AUTHORS: Joost Bremmer (toost.b@gmail.com)
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU General Public License as published by
@@ -39,17 +39,18 @@ class sukebeinyaasi(object):
     # 'all', 'movies', 'tv', 'music', 'games', 'anime', 'software', 'pictures',
     # 'books'
     supported_categories = {
-            'all': '0_0',
-            'anime': '1_0',
-            'books': '3_0',
-            'music': '2_0',
-            'pictures': '5_0',
-            'software': '6_0',
-            'tv': '4_0',
-            'movies': '4_0'}
+        'all': '0_0',
+        'anime': '1_0',
+        'books': '3_0',
+        'music': '2_0',
+        'pictures': '5_0',
+        'software': '6_0',
+        'tv': '4_0',
+        'movies': '4_0'}
 
     class SukebeiNyaasiParser(HTMLParser):
         """ Parses Nyaa.si browse page for search resand prints them"""
+
         def __init__(self, res, url):
             try:
                 super().__init__()
@@ -76,8 +77,8 @@ class sukebeinyaasi(object):
             # get torrent name
             if 'title' in params and 'class' not in params and params['href'].startswith('/view/'):
                 hit = {
-                        'name': params['title'],
-                        'desc_link': self.engine_url + params['href']}
+                    'name': params['title'],
+                    'desc_link': self.engine_url + params['href']}
                 if not self.curr:
                     hit['engine_url'] = self.engine_url
                     self.curr = hit
