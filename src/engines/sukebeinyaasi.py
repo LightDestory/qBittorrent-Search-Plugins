@@ -15,7 +15,6 @@
 #  You should have received a copy of the GNU General Public License
 #  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-
 try:
     from HTMLParser import HTMLParser
 except ImportError:
@@ -76,11 +75,8 @@ class sukebeinyaasi(object):
         def start_a(self, attr):
             params = dict(attr)
             # get torrent name
-            if (
-                "title" in params
-                and "class" not in params
-                and params["href"].startswith("/view/")
-            ):
+            if ("title" in params and "class" not in params
+                    and params["href"].startswith("/view/")):
                 hit = {
                     "name": params["title"],
                     "desc_link": self.engine_url + params["href"],
@@ -139,11 +135,8 @@ class sukebeinyaasi(object):
         :param cat:  the name of a search category, see supported_categories.
         """
 
-        url = str(
-            "{0}/?f=0&s=seeders&o=desc&c={1}&q={2}".format(
-                self.url, self.supported_categories.get(cat), what
-            )
-        )
+        url = str("{0}/?f=0&s=seeders&o=desc&c={1}&q={2}".format(
+            self.url, self.supported_categories.get(cat), what))
 
         hits = []
         page = 1
