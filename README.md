@@ -50,6 +50,7 @@ Some plugins can need some settings, please read carefully the *Notes* section.
 - **RARBG** uses an anti-spam system, if you perform a lot of queries on a short time the plugin will stop working until their system
   removes you from a "alert" list
 - **TNTVillage** uses a emdebed dump so it is a bit fatty: 20MB of plugin!
+- **YourBittorrent** by default the website only shows 50 torrent based on your text-query, I tried to force pagination but it causes duplicates results. So... use specific queries!
 
 ## Contributions and Testing
 
