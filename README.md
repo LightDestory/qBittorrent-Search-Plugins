@@ -3,7 +3,7 @@
 This is a still growing collection of search plugins for qBittorent, an amazing and open source torrent client,
 maintained by me, LightDestory.
 
-If a plugin stops to work or you need a specific plugin, let me know by opening an issue.
+If a plugin stops working or you need a specific plugin, let me know by opening an issue.
 
 - [qBittorrent Search Plugins](#qbittorrent-search-plugins)
   - [Status](#status)
@@ -16,10 +16,10 @@ If a plugin stops to work or you need a specific plugin, let me know by opening 
 ## Status
 
 | Plugin                                                                   | Version | Last Updated | Working?           |
-| ------------------------------------------------------------------------ | ------- | ------------ | ------------------ |
-| ![AcademicTorrents](./src/engines/academictorrents.png) AcademicTorrents | 1.0     | 17/06/2021   | :heavy_check_mark: |
+| ------------------------------------------------------------------------ |---------|--------------| ------------------ |
+| ![AcademicTorrents](./src/engines/academictorrents.png) AcademicTorrents | 1.1     | 01/05/2022   | :heavy_check_mark: |
 | ![btetree](./src/engines/btetree.png) btetree                            | 1.2     | 17/06/2021   | :heavy_check_mark: |
-| ![ETTV](./src/engines/ettv.png) ETTV                                     | 1.2     | 17/06/2021   | :heavy_check_mark: - **Site seems to be closed at 08-02-22** |
+| ![ETTV](./src/engines/ettv.png) ETTV                                     | 1.2     | 17/06/2021   | :heavy_multiplication_x: - **Site seems to be closed at 08-02-22** |
 | ![GloTorrents](./src/engines/glotorrents.png) GloTorrents                | 1.3     | 05/12/2021   | :heavy_check_mark: |
 | ![IlCorsaroNero](./src/engines/ilcorsaronero.png) IlCorsaroNero          | 1.2     | 17/06/2021   | :heavy_check_mark: |
 | ![RARBG](./src/engines/rarbg.png) RARBG                                  | 1.1     | 06/12/2021   | :heavy_check_mark: |
@@ -39,12 +39,7 @@ Some plugins can need some settings, please read carefully the *Notes* section.
 ## :book: Notes
 
 - **IlCorsaroNero** has been blacklisted on Italy's DNS, please **use a different DNS such as Google or Cloudflare**
-- **AcademicTorrents** is protected by CloudFlare, so vanilla Python 3 is not suitable to scrap this engine. The plugin
-  uses the official AcademicTorrents' API **but** by default requests without a _API KEY_ are limited to only 20
-  results.
-
-      To use properly AcademicTorrents' plugins, please register an account on their website and paste your UID and API_KEY
-      inside the python file, you can find on the head two empty strings to fill by yourself.
+- **AcademicTorrents** please set "Search in" properly!
 - **Snowfl** is a torrent aggregator, there is not a fixed way to fetch the torrent. I tried to fix the in-app torrent
   fetch implementing a generic magnet link fetch, but it doesn't work every time.
 - **RARBG** uses an anti-spam system, if you perform a lot of queries on a short time the plugin will stop working until their system
