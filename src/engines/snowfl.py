@@ -1,4 +1,4 @@
-# VERSION: 1.1
+# VERSION: 1.2
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 # Based on gitDew work (https://github.com/gitDew/qbittorrent-snowfl-search-plugin)
@@ -44,7 +44,7 @@ class snowfl(object):
             file_name = re.findall(r'.+?\"(b.min.js\?.+)\"', index_html)[0]
             script = retrieve_url(self.url + file_name)
             # Retrieving the token
-            token = re.findall(r'\"([a-zA-Z0-9]+)\",step,queryId,count,sort,topx,filters=\[\],sources=\[\],nsfwFilter=!1,loadingMore=!1,resultItems=', script)[0]
+            token = re.findall(r'\"([a-zA-Z0-9]+)\";\$\(\(function\(\){var e,t,n,r,o,a,i=', script)[0]
             return token
 
         def generateQuery(self, what):
