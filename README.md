@@ -20,7 +20,7 @@ If a plugin stops working or you need a specific plugin, let me know by opening 
 | ![AcademicTorrents](./src/engines/academictorrents.png) AcademicTorrents | 1.1     | 01/05/2022   | :heavy_check_mark: |
 | ![btetree](./src/engines/btetree.png) btetree                            | 1.2     | 17/06/2021   | :heavy_check_mark: |
 | ![ETTV](./src/engines/ettv.png) ETTV                                     | 1.2     | 17/06/2021   | :heavy_multiplication_x: - **Site seems to be closed at 08-02-22** |
-| ![GloTorrents](./src/engines/glotorrents.png) GloTorrents                | 1.3     | 05/12/2021   | :heavy_check_mark: |
+| ![GloTorrents](./src/engines/glotorrents.png) GloTorrents                | 1.4     | 25/07/2022   | :heavy_check_mark: |
 | ![IlCorsaroNero](./src/engines/ilcorsaronero.png) IlCorsaroNero          | 1.2     | 17/06/2021   | :heavy_check_mark: |
 | ![RARBG](./src/engines/rarbg.png) RARBG                                  | 1.1     | 06/12/2021   | :heavy_check_mark: |
 | ![RockBox](./src/engines/rockbox.png) RockBox                            | 1.0     | 17/06/2021   | :heavy_check_mark: |
