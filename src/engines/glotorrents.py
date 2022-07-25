@@ -1,5 +1,5 @@
-# VERSION: 1.3
-# AUTHORS: LightDestory (https://github.com/LightDestory)
+# VERSION: 1.4
+# AUTHORS: LightDestory (https://github.com/LightDestory), BurningMop (https://github.com/BurningMop)
 
 import re
 import urllib.parse
@@ -41,7 +41,7 @@ class glotorrents(object):
                     'seeds': torrents[torrent][3],
                     'leech': torrents[torrent][4],
                     'engine_url': self.url,
-                    'desc_link': urllib.parse.unquote(torrents[torrent][0])
+                    'desc_link': torrents[torrent][5]
                 }
                 prettyPrinter(data)
 
@@ -52,23 +52,13 @@ class glotorrents(object):
             for tr in trs:
                 # Extract from the A node all the needed information
                 url_titles = re.search(
-                    r'.+?title.+?href=\"(.+?)\"><b>(.+?)</b></a>.+?align=\'center\'>([0-9\,\.]+ (TB|GB|MB|KB)).+?<font color=\'green\'><b>([0-9,]+)</b>.+?<font color=\'#[0-9a-zA-Z]{6}\'><b>([0-9,]+)</b>',
+                    r'title=\"(.+?)\".+?href=\"(.+?)\".+?</a>.+?align=\'center\'>.+?href=\"(magnet:.*?)\".+?([0-9\,\.]+ (TB|GB|MB|KB)).+?<font color=\'green\'><b>([0-9,]+)</b>.+?<font color=\'#[0-9a-zA-Z]{6}\'><b>([0-9,]+)</b>',
                     tr)
                 if url_titles:
-                    torrents.append(
-                        [urllib.parse.quote('{0}{1}'.format(self.url, url_titles.group(1))), url_titles.group(
-                            2), url_titles.group(3).replace(",", ""), url_titles.group(5).replace(",", ""),
-                         url_titles.group(6).replace(",", "")])
+                    torrent_data = [urllib.parse.quote('{0}{1}'.format(self.url, url_titles.group(2))), url_titles.group(1), url_titles.group(4).replace(",", ""), 
+                        url_titles.group(6).replace(",", ""),url_titles.group(7).replace(",", ""), url_titles.group(3)]
+                    torrents.append(torrent_data)
             return torrents
-
-    def download_torrent(self, info):
-        torrent_page = retrieve_url(urllib.parse.unquote(info))
-        magnet_match = re.search(
-            r'\"(magnet:.*?)\"', torrent_page)
-        if magnet_match and magnet_match.groups():
-            print('{0} {1}'.format(magnet_match.groups()[0], info))
-        else:
-            raise Exception('Error, please fill a bug report!')
 
     # DO NOT CHANGE the name and parameters of this function
     # This function will be the one called by nova2.py
@@ -78,6 +68,7 @@ class glotorrents(object):
         for currPage in range(0, self.max_pages):
             url = '{0}search_results.php?search={1}&cat={2}&page={3}'.format(
                 self.url, what, self.supported_categories[cat], currPage)
+            print(url)
             # Some replacements to format the html source
             html = retrieve_url(url).replace("	", "").replace(
                 "\n", "").replace("\r", "")
