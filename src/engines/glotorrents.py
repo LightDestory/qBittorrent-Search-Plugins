@@ -68,7 +68,6 @@ class glotorrents(object):
         for currPage in range(0, self.max_pages):
             url = '{0}search_results.php?search={1}&cat={2}&page={3}'.format(
                 self.url, what, self.supported_categories[cat], currPage)
-            print(url)
             # Some replacements to format the html source
             html = retrieve_url(url).replace("	", "").replace(
                 "\n", "").replace("\r", "")
