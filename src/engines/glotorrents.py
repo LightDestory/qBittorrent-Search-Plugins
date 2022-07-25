@@ -35,13 +35,13 @@ class glotorrents(object):
             for torrent in range(resultSize):
                 count = count + 1
                 data = {
-                    'link': torrents[torrent][0],
+                    'link': torrents[torrent][5],
                     'name': torrents[torrent][1],
                     'size': torrents[torrent][2],
                     'seeds': torrents[torrent][3],
                     'leech': torrents[torrent][4],
                     'engine_url': self.url,
-                    'desc_link': torrents[torrent][5]
+                    'desc_link': torrents[torrent][0]
                 }
                 prettyPrinter(data)
 
