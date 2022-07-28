@@ -1,9 +1,8 @@
-# VERSION: 1.4
+# VERSION: 1.5
 # AUTHORS: LightDestory (https://github.com/LightDestory), BurningMop (https://github.com/BurningMop)
 
 import re
-import urllib.parse
-
+from time import sleep
 from helpers import retrieve_url
 from novaprinter import prettyPrinter
 
@@ -35,13 +34,13 @@ class glotorrents(object):
             for torrent in range(resultSize):
                 count = count + 1
                 data = {
-                    'link': torrents[torrent][5],
+                    'link': torrents[torrent][0],
                     'name': torrents[torrent][1],
                     'size': torrents[torrent][2],
                     'seeds': torrents[torrent][3],
                     'leech': torrents[torrent][4],
                     'engine_url': self.url,
-                    'desc_link': torrents[torrent][0]
+                    'desc_link': torrents[torrent][5]
                 }
                 prettyPrinter(data)
 
@@ -55,24 +54,29 @@ class glotorrents(object):
                     r'title=\"(.+?)\".+?href=\"(.+?)\".+?</a>.+?align=\'center\'>.+?href=\"(magnet:.*?)\".+?([0-9\,\.]+ (TB|GB|MB|KB)).+?<font color=\'green\'><b>([0-9,]+)</b>.+?<font color=\'#[0-9a-zA-Z]{6}\'><b>([0-9,]+)</b>',
                     tr)
                 if url_titles:
-                    torrent_data = [urllib.parse.quote('{0}{1}'.format(self.url, url_titles.group(2))), url_titles.group(1), url_titles.group(4).replace(",", ""), 
-                        url_titles.group(6).replace(",", ""),url_titles.group(7).replace(",", ""), url_titles.group(3)]
+                    torrent_data = [
+                        url_titles.group(3),
+                        url_titles.group(1),
+                        url_titles.group(4).replace(",", ""),
+                        url_titles.group(6).replace(",", ""),
+                        url_titles.group(7).replace(",", ""),
+                        '{0}{1}'.format(self.url, url_titles.group(2)),
+                        ]
                     torrents.append(torrent_data)
             return torrents
 
-    # DO NOT CHANGE the name and parameters of this function
-    # This function will be the one called by nova2.py
+
+    def download_torrent(self, info):
+        print('{0} {1}'.format(info, info))
+
     def search(self, what, cat='all'):
         what = what.replace("%20", "+")
         parser = self.HTMLParser(self.url)
         for currPage in range(0, self.max_pages):
-            url = '{0}search_results.php?search={1}&cat={2}&page={3}'.format(
-                self.url, what, self.supported_categories[cat], currPage)
+            url = '{0}search_results.php?search={1}&cat={2}&page={3}'.format(self.url, what, self.supported_categories[cat], currPage)
             # Some replacements to format the html source
-            html = retrieve_url(url).replace("	", "").replace(
-                "\n", "").replace("\r", "")
-
+            html = retrieve_url(url).replace("	", "").replace("\n", "").replace("\r", "")
             parser.feed(html)
-            # if there are no results exit
+            sleep(2)
             if parser.pageResSize <= 0:
                 break
