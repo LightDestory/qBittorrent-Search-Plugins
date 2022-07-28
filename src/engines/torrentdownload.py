@@ -56,7 +56,6 @@ class torrentdownload(object):
                         url_titles.group(3).replace(",", ""),
                         url_titles.group(5).replace(",", ""),
                         url_titles.group(6).replace(",", ""),
-                        '{0}{1}'.format(self.url, url_titles.group(2)),
                     ]
                     torrents.append(torrent_data)
             return torrents
