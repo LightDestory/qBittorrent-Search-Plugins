@@ -3,7 +3,6 @@
 
 import re
 import urllib.parse
-
 from helpers import retrieve_url
 from novaprinter import prettyPrinter
 
@@ -12,7 +11,7 @@ class ilcorsaronero(object):
     url = 'https://ilcorsaronero.link/'
     name = 'Il Corsaro Nero'
     """ 
-    ***TLDR; It is safer to force an 'all' research***
+        TLDR; It is safer to force an 'all' research
         IlCorsaroNero's categories are very specific
         qBittorrent does not provide enough categories to implement a good filtering.
         For example, qBittorrent provides only a generic 'games' category meanwhile the website uses: pc, xbox and so on
@@ -50,39 +49,37 @@ class ilcorsaronero(object):
         def __findTorrents(self, html):
             torrents = []
             # Find all TR nodes with class odd or odd2
-            trs = re.findall(r'<tr class=\"odd[2]?\">.*?</TR>', html)
+            trs = re.findall(r'<tr class=\"odd2?\">.*?</TR>', html)
             for tr in trs:
                 # Extract from the A node all the needed information
                 url_titles = re.search(
                     r'A class=\"tab\" HREF=\"(.+?)\" >(.+?)?</A>.+?([0-9\.\,]+ (TB|GB|MB|KB)).+?#[0-9a-zA-Z]{6}\'>([0-9,]+)<.+?#[0-9a-zA-Z]{6}\'>([0-9,]+)',
                     tr)
                 if url_titles:
-                    name = url_titles.group(2) if url_titles.group(
-                        2) else url_titles.group(1).split("/")[5]
-                    torrents.append(
-                        [urllib.parse.quote(url_titles.group(1)), name, url_titles.group(3).replace(",", ""),
-                         url_titles.group(5).replace(",", ""), url_titles.group(6).replace(",", "")])
+                    name = url_titles.group(2) if url_titles.group(2) else url_titles.group(1).split("/")[5]
+                    torrents.append([
+                        urllib.parse.quote(url_titles.group(1)),
+                        name,
+                        url_titles.group(3).replace(",", ""),
+                        url_titles.group(5).replace(",", ""),
+                        url_titles.group(6).replace(",", "")
+                    ])
             return torrents
 
     def download_torrent(self, info):
         torrent_page = retrieve_url(urllib.parse.unquote(info))
-        magnet_match = re.search(
-            r'\"(magnet:.*?)\"', torrent_page)
+        magnet_match = re.search(r'\"(magnet:.*?)\"', torrent_page)
         if magnet_match and magnet_match.groups():
             print('{0} {1}'.format(magnet_match.groups()[0], info))
         else:
             raise Exception('Error, please fill a bug report!')
 
-    # DO NOT CHANGE the name and parameters of this function
-    # This function will be the one called by nova2.py
     def search(self, what, cat='all'):
         parser = self.HTMLParser(self.url)
         for currPage in range(0, self.max_pages):
-            url = '{0}advsearch.php?search={1}&&page={2}'.format(
-                self.url, what, currPage)
+            url = '{0}advsearch.php?search={1}&&page={2}'.format(self.url, what, currPage)
             # Some replacements to format the html source
-            html = retrieve_url(url).replace("	", "").replace(
-                "\n", "").replace("\r", "").replace("n/a", "0")
+            html = retrieve_url(url).replace("	", "").replace("\n", "").replace("\r", "").replace("n/a", "0")
             parser.feed(html)
             # if there are no results exit
             if parser.pageResSize <= 0:

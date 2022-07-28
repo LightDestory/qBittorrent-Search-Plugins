@@ -3,7 +3,6 @@
 
 from urllib import parse, request
 import xml.etree.ElementTree as ET
-
 from helpers import retrieve_url, download_file
 from novaprinter import prettyPrinter
 
@@ -63,12 +62,9 @@ class academictorrents(object):
         else:
             raise Exception('Error, please fill a bug report!')
 
-    # DO NOT CHANGE the name and parameters of this function
-    # This function will be the one called by nova2.py
     def search(self, what, cat='all'):
         global FILTERS
         FILTERS = [f.lower() for f in str(what).split("%20")]
-        url = ""
         db = self.retrieve_database()
         filtered = list(filter(self.torrent_filter, db.findall("channel/item")))
         self.parseXML(filtered)
