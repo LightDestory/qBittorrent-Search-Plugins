@@ -58,7 +58,7 @@ class ilcorsaronero(object):
                 if url_titles:
                     name = url_titles.group(2) if url_titles.group(2) else url_titles.group(1).split("/")[5]
                     torrents.append([
-                        urllib.parse.quote(url_titles.group(1)),
+                        urllib.parse.quote(url_titles.group(1), safe=':'),
                         name,
                         url_titles.group(3).replace(",", ""),
                         url_titles.group(5).replace(",", ""),
