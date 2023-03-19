@@ -1,13 +1,25 @@
-# VERSION: 1.1
+# VERSION: 1.2
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
-from urllib import parse, request
+import sys
+from pathlib import Path
+from datetime import date
+from urllib import request
 import xml.etree.ElementTree as ET
-from helpers import retrieve_url, download_file
+
+from helpers import retrieve_url
 from novaprinter import prettyPrinter
 
 DATABASE_URL = "https://academictorrents.com/database.xml"
 FILTERS = []
+home = str(Path.home())
+system_paths = {
+    'win32': f"{home}/AppData/Roaming",
+    'linux': f"{home}/.local/share",
+    'darwin': f"{home}/Library/Application Support",
+}
+cache_path = Path(f"{system_paths[sys.platform]}/qbit_plugins_data/academic_cache.xml")
+
 
 class academictorrents(object):
     url = 'https://academictorrents.com/'
@@ -19,10 +31,10 @@ class academictorrents(object):
     """
     supported_categories = {'all': '0'}
 
-    def parseXML(self, collection):
+    def _parseXML(self, collection):
         for torrent in collection:
             data = {
-                'link': parse.quote(torrent.findtext("link")),
+                'link': f"{self.url}/download/{torrent.findtext('infohash')}.torrent",
                 'name': torrent.findtext("title"),
                 'size': torrent.findtext("size"),
                 'seeds': -1,
@@ -32,39 +44,43 @@ class academictorrents(object):
             }
             prettyPrinter(data)
 
-    def torrent_filter(self, item) -> bool:
+    def _torrent_filter(self, item) -> bool:
         global FILTERS
         title: str = item.findtext("title").lower()
         desc: str = item.findtext("description").lower()
-        title_check: bool = True
-        desc_check: bool = True
         for f in FILTERS:
-            if f not in title:
-                title_check = False
-                break
-        for f in FILTERS:
-            if f not in desc:
-                desc_check = False
-                break
-        return title_check or desc_check
+            if f in title or f in desc:
+                return True
+        return False
 
-    def retrieve_database(self):
-        # TO-DO: Implement a cross-platform cache system
+    def _retrieve_database(self):
+        folder_path = Path(f"{system_paths[sys.platform]}/qbit_plugins_data")
+        if not folder_path.exists():
+            folder_path.mkdir()
+        self._update_database_cache()
+        with open(cache_path, encoding="utf-8") as f:
+            lines = f.readlines()[1:]
+            return ET.fromstring("".join(lines))
+
+    def _update_database_cache(self):
+        if cache_path.exists():
+            current_date = str(date.today())
+            with open(cache_path, encoding="utf-8") as f:
+                saved_date = f.readline().rstrip()
+                if current_date == saved_date:
+                    return
         req = request.urlopen(DATABASE_URL)
         db_local_text = req.read().decode("utf-8")
+        f = open(cache_path, "w", encoding="utf-8")
+        f.write(f"{str(date.today())}\n")
+        f.write(db_local_text)
+        f.close()
         req.close()
-        return ET.fromstring(db_local_text)
 
-    def download_torrent(self, info):
-        infoHash = parse.unquote(info).split("/")[-1]
-        if len(infoHash) == 40:
-            print(download_file('{0}/download/{1}.torrent'.format(self.url, infoHash)))
-        else:
-            raise Exception('Error, please fill a bug report!')
 
     def search(self, what, cat='all'):
         global FILTERS
         FILTERS = [f.lower() for f in str(what).split("%20")]
-        db = self.retrieve_database()
-        filtered = list(filter(self.torrent_filter, db.findall("channel/item")))
-        self.parseXML(filtered)
+        db = self._retrieve_database()
+        filtered = list(filter(self._torrent_filter, db.findall("channel/item")))
+        self._parseXML(filtered)
