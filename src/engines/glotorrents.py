@@ -65,13 +65,10 @@ class glotorrents(object):
         while True:
             url = '{0}search_results.php?search={1}&cat={2}&page={3}'.format(self.url, what,
                                                                              self.supported_categories[cat], counter)
-            try:
-                # Some replacements to format the html source
-                html = retrieve_url(url).replace("	", "").replace("\n", "").replace("\r", "")
-                parser.feed(html)
-                if parser.noTorrents:
-                    break
-                counter += 1
-                sleep(5)
-            except KeyboardInterrupt:
-                pass
+            # Some replacements to format the html source
+            html = retrieve_url(url).replace("	", "").replace("\n", "").replace("\r", "")
+            parser.feed(html)
+            if parser.noTorrents:
+                break
+            counter += 1
+            sleep(5)
