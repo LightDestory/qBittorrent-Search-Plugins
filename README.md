@@ -64,6 +64,8 @@ Due to qBittorrent behavior, to update unofficial plugins you must check this re
 
 _If you want improve such behavior, please help me reaching qBittorrent's developer by upvoting: [Improve Plugin Manager behavior](https://github.com/qbittorrent/qBittorrent/issues/17445)_
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ### Installation
 
 There are 2 ways to install unofficial plugins:
@@ -75,6 +77,8 @@ There are 2 ways to install unofficial plugins:
 Some plugins may need additional settings to work properly, please read carefully the _Notes_ section.
 
 For any doubts about the installation process, please refer to the official wiki: [Install search plugins](https://github.com/qbittorrent/search-plugins/wiki/Install-search-plugins).
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Plugin List
 
@@ -96,6 +100,8 @@ For any doubts about the installation process, please refer to the official wiki
 | ![TorrentDownload](./src/engines/torrentdownload.png) TorrentDownload    | Aggregator    | **1.0** - _(28/07/2022)_ | :heavy_multiplication_x: | <div align=center> Stopped offering DL :cry: <br> [<img src="./.github/assets/images/dl_image.png" width=32>](https://raw.githubusercontent.com/LightDestory/qBittorrent-Search-Plugins/master/src/engines/torrentdownload.py)</div>                                         |
 | ![YourBittorrent](./src/engines/yourbittorrent.png) YourBittorrent       | Torrent Index | **1.3** - _(22/02/2022)_ | :heavy_check_mark:       | <div align=center>[<img src="./.github/assets/images/dl_image.png" width=32>](https://raw.githubusercontent.com/LightDestory/qBittorrent-Search-Plugins/master/src/engines/yourbittorrent.py)</div>                                                                          |
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ### Notes
 
 - **IlCorsaroNero** has been blacklisted on Italy's DNS, please **use a different DNS such as Google or Cloudflare**
@@ -107,6 +113,8 @@ For any doubts about the installation process, please refer to the official wiki
 - **TNTVillage** uses an embeded dump, so it is a bit fatty: 20MB of plugin!
 - **YourBittorrent** by default the website only shows 50 torrent based on your text-query, I tried to force pagination
   but it causes duplicates results. So... use specific queries!
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
