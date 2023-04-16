@@ -116,8 +116,6 @@ For any doubts about the installation process, please refer to the official wiki
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
 ### Developer Notes
 
 If you want to create a new search engine, please refer to the [official wiki](https://github.com/qbittorrent/search-plugins/wiki/How-to-write-a-search-plugin#python-class-file-structure)
