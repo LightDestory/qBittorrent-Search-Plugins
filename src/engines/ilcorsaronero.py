@@ -9,13 +9,31 @@ from novaprinter import prettyPrinter
 class ilcorsaronero(object):
     url = 'https://ilcorsaronero.link/'
     name = 'Il Corsaro Nero'
-    """ 
-        TLDR; It is safer to force an 'all' research
-        IlCorsaroNero's categories are very specific
-        qBittorrent does not provide enough categories to implement a good filtering.
-        For example, qBittorrent provides only a generic 'games' category meanwhile the website uses: pc, xbox and so on
     """
-    supported_categories = {'all': '0'}
+        The following categories can be joined using ';' to have a better match with categories of qBittorrent:
+        1-Film BDRip
+        2-Music
+        3-PC Games
+        5-Anime
+        6-Books
+        7-App Windows
+        8-App Linux
+        9-App Mac
+        13-PlayStation Games
+        14-XBOX Games
+        15-TV Series
+        18-Audiobooks
+        19-Film Cam
+        20-DVD
+    """
+    supported_categories = {'all': '',
+                            'movies': '&category=1;19;20&',
+                            'music': '&category=2&',
+                            'games': '&category=3;13;14&',
+                            'anime': '&category=5&',
+                            'books': '&category=6;18&',
+                            'software': '&category=7;8;9&',
+                            'tv': '&category=15&'}
 
     class HTMLParser:
 
@@ -66,7 +84,7 @@ class ilcorsaronero(object):
         parser = self.HTMLParser(self.url)
         counter: int = 0
         while True:
-            url = '{0}advsearch.php?search={1}&&page={2}'.format(self.url, what, counter)
+            url = '{0}advsearch.php?{1}search={2}&&page={3}'.format(self.url, self.supported_categories[cat], what, counter)
             # Some replacements to format the html source
             html = retrieve_url(url).replace("	", "").replace("\n", "").replace("\r", "").replace("n/a", "0")
             parser.feed(html)
