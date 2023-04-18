@@ -69,10 +69,14 @@ class ilcorsaronero(object):
                     r'A class=\"tab\" HREF=\"(.+?)\" >(.+?)?</A>.+?([0-9\.\,]+ (TB|GB|MB|KB)).+?value=\"(.+?)\".+?#[0-9a-zA-Z]{6}\'>([0-9,]+)<.+?#[0-9a-zA-Z]{6}\'>([0-9,]+)',
                     tr)
                 if url_titles:
-                    name = url_titles.group(1).split("/")[5]
+                    name = url_titles.group(1).split("/")[5].replace("_", " ")
+                    try:
+                        name = url_titles.group(2)[:55] + " ".join(name[55:].split())
+                    except TypeError:
+                        name = " ".join(name.split())
                     torrents.append([
                         'https://itorrents.org/torrent/{0}.torrent'.format(url_titles.group(5)),
-                        name.replace("_", " "),
+                        name,
                         url_titles.group(3).replace(",", ""),
                         url_titles.group(6).replace(",", ""),
                         url_titles.group(7).replace(",", ""),
