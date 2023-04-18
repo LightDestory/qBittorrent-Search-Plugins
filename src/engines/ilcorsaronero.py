@@ -1,4 +1,4 @@
-# VERSION: 1.3
+# VERSION: 1.4
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
@@ -27,13 +27,13 @@ class ilcorsaronero(object):
         20-DVD
     """
     supported_categories = {'all': '',
-                            'movies': '&category=1;19;20&',
-                            'music': '&category=2&',
-                            'games': '&category=3;13;14&',
-                            'anime': '&category=5&',
-                            'books': '&category=6;18&',
-                            'software': '&category=7;8;9&',
-                            'tv': '&category=15&'}
+                            'movies': '1;19;20',
+                            'music': '2',
+                            'games': '3;13;14',
+                            'anime': '5',
+                            'books': '6;18',
+                            'software': '7;8;9',
+                            'tv': '15'}
 
     class HTMLParser:
 
@@ -83,8 +83,9 @@ class ilcorsaronero(object):
     def search(self, what, cat='all'):
         parser = self.HTMLParser(self.url)
         counter: int = 0
+        filter = "" if cat == "all" else '&category={0}'.format(self.supported_categories[cat]) 
         while True:
-            url = '{0}advsearch.php?{1}search={2}&&page={3}'.format(self.url, self.supported_categories[cat], what, counter)
+            url = '{0}advsearch.php?search={1}&page={2}{3}'.format(self.url, what, counter, filter)
             # Some replacements to format the html source
             html = retrieve_url(url).replace("	", "").replace("\n", "").replace("\r", "").replace("n/a", "0")
             parser.feed(html)
