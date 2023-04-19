@@ -1,4 +1,4 @@
-# VERSION: 1.4
+# VERSION: 1.5
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
@@ -72,7 +72,7 @@ class ilcorsaronero(object):
                     name = url_titles.group(1).split("/")[5]
                     torrents.append([
                         'https://itorrents.org/torrent/{0}.torrent'.format(url_titles.group(5)),
-                        name.replace("_", " "),
+                        str(re.sub(r'_+', ' ', name)),
                         url_titles.group(3).replace(",", ""),
                         url_titles.group(6).replace(",", ""),
                         url_titles.group(7).replace(",", ""),
