@@ -71,7 +71,9 @@ class ilcorsaronero(object):
                 if url_titles:
                     name = url_titles.group(1).split("/")[5].replace("_", " ")
                     try:
-                        name = url_titles.group(2)[:55] + " ".join(name[55:].split())
+                        name_start = url_titles.group(2)[:55]
+                        divider = " " if " " in name_start else "."
+                        name = name_start + divider.join(name[55:].split())
                     except TypeError:
                         name = " ".join(name.split())
                     torrents.append([
