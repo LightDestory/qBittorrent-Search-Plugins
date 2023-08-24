@@ -1,4 +1,4 @@
-# VERSION: 1.5
+# VERSION: 1.6
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
@@ -66,7 +66,7 @@ class ilcorsaronero(object):
             for tr in trs:
                 # Extract from the A node all the needed information
                 url_titles = re.search(
-                    r'A class=\"tab\" HREF=\"(.+?)\" >(.+?)?</A>.+?([0-9\.\,]+ (TB|GB|MB|KB)).+?value=\"(.+?)\".+?#[0-9a-zA-Z]{6}\'>([0-9,]+)<.+?#[0-9a-zA-Z]{6}\'>([0-9,]+)',
+                    r'A class=\"tab\" HREF=\"(.+?)\">(.+?)?</A>.+?([0-9\.\,]+ (TB|GB|MB|KB)).+?value=\"(.+?)\".+?#[0-9a-zA-Z]{6}\">([0-9,]+)<.+?#[0-9a-zA-Z]{6}\">([0-9,]+)',
                     tr)
                 if url_titles:
                     name = url_titles.group(1).split("/")[5]
