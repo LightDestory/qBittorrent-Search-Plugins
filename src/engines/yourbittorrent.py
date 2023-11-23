@@ -1,4 +1,4 @@
-# VERSION: 1.3
+# VERSION: 1.4
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
@@ -37,7 +37,7 @@ class yourbittorrent(object):
                     'seeds': torrents[torrent][3],
                     'leech': torrents[torrent][4],
                     'engine_url': self.url,
-                    'desc_link': urllib.parse.unquote(torrents[torrent][0])
+                    'desc_link': torrents[torrent][5]
                 }
                 prettyPrinter(data)
 
@@ -52,21 +52,14 @@ class yourbittorrent(object):
                     tr)
                 if url_titles:
                     torrents.append([
-                        urllib.parse.quote('{0}{1}'.format(self.url, url_titles.group(1))),
+                        'https://yt.0c.gay/down/{0}.torrent'.format(url_titles.group(1).split("/")[2]),
                         url_titles.group(2).replace("<b>", "").replace("</b>", "").replace('<span style=color:#39a8bb>', "").replace("</span>", ""),
                         url_titles.group(3).replace(",", ""),
                         url_titles.group(5).replace(",", ""),
-                        url_titles.group(6).replace(",", "")
+                        url_titles.group(6).replace(",", ""),
+                        '{0}{1}'.format(self.url, url_titles.group(1))
                     ])
             return torrents
-
-    def download_torrent(self, info):
-        torrent_page = retrieve_url(urllib.parse.unquote(info))
-        file_link = re.search(r'(down/.+?\.torrent)', torrent_page)
-        if file_link and file_link.groups():
-            print(download_file(self.url + file_link.groups()[0]))
-        else:
-            raise Exception('Error, please fill a bug report!')
 
     def search(self, what, cat='all'):
         what = what.replace("%20", "-")
