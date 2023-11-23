@@ -1,9 +1,9 @@
-# VERSION: 1.0
+# VERSION: 1.1
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
 import urllib.parse
-from helpers import retrieve_url
+from helpers import retrieve_url, download_file
 from novaprinter import prettyPrinter
 
 
@@ -36,7 +36,7 @@ class torrentdownload(object):
                     'seeds': torrents[torrent][3],
                     'leech': torrents[torrent][4],
                     'engine_url': self.url,
-                    'desc_link': urllib.parse.unquote(torrents[torrent][0])
+                    'desc_link': torrents[torrent][5]
                 }
                 prettyPrinter(data)
 
@@ -51,22 +51,26 @@ class torrentdownload(object):
                     tr)
                 if url_titles:
                     torrent_data = [
-                        urllib.parse.quote('{0}{1}'.format(self.url, url_titles.group(1))),
+                        'magnet:?xt=urn:btih:{0}&dn=&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&tr=http%3A%2F%2Ftracker.ipv6tracker.ru%3A80%2Fannounce&tr=udp%3A%2F%2Fretracker.hotplug.ru%3A2710%2Fannounce&tr=https%3A%2F%2Ftracker.fastdownload.xyz%3A443%2Fannounce&tr=https%3A%2F%2Fopentracker.xyz%3A443%2Fannounce&tr=http%3A%2F%2Fopen.trackerlist.xyz%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.birkenwald.de%3A6969%2Fannounce&tr=https%3A%2F%2Ft.quic.ws%3A443%2Fannounce&tr=https%3A%2F%2Ftracker.parrotsec.org%3A443%2Fannounce&tr=udp%3A%2F%2Ftracker.supertracker.net%3A1337%2Fannounce&tr=http%3A%2F%2Fgwp2-v19.rinet.ru%3A80%2Fannounce&tr=udp%3A%2F%2Fbigfoot1942.sektori.org%3A6969%2Fannounce&tr=udp%3A%2F%2Fcarapax.net%3A6969%2Fannounce&tr=udp%3A%2F%2Fretracker.akado-ural.ru%3A80%2Fannounce&tr=udp%3A%2F%2Fretracker.maxnet.ua%3A80%2Fannounce&tr=udp%3A%2F%2Fbt.dy20188.com%3A80%2Fannounce&tr=http%3A%2F%2F0d.kebhana.mx%3A443%2Fannounce&tr=http%3A%2F%2Ftracker.files.fm%3A6969%2Fannounce&tr=http%3A%2F%2Fretracker.joxnet.ru%3A80%2Fannounce&tr=http%3A%2F%2Ftracker.moxing.party%3A6969%2Fannounce'.format(url_titles.group(1).split("/")[0]),
                         url_titles.group(2).replace("<span class=\"na\">", "").replace("</span>", ""),
                         url_titles.group(3).replace(",", ""),
                         url_titles.group(5).replace(",", ""),
                         url_titles.group(6).replace(",", ""),
+                        '{0}{1}'.format(self.url, url_titles.group(1))
                     ]
                     torrents.append(torrent_data)
             return torrents
 
-    def download_torrent(self, info):
-        torrent_page = retrieve_url(urllib.parse.unquote(info))
-        magnet_match = re.search(r'\"(magnet:.*?)\"', torrent_page)
-        if magnet_match and magnet_match.groups():
-            print('{0} {1}'.format(magnet_match.groups()[0], info))
-        else:
-            raise Exception('Error, please fill a bug report!')
+    def download_torrent(self, download_url):
+        # Temporary removed due to https://github.com/qbittorrent/search-plugins/issues/229
+        #torrent_page = retrieve_url(urllib.parse.unquote(download_url))
+        #magnet_match = re.search(r'\"(magnet:.*?)\"', torrent_page)
+        #if magnet_match and magnet_match.groups():
+        #    magnet_str = magnet_match.groups()[0]
+        #    print(magnet_str + " " + magnet_str)
+        #else:
+        #    raise Exception('Error, please fill a bug report!')
+        print(download_url + " " + download_url)
 
     def search(self, what, cat='all'):
         what = what.replace("%20", "+")
