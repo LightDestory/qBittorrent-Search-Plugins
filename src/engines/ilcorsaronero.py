@@ -1,4 +1,4 @@
-# VERSION: 1.7
+# VERSION: 1.8
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
@@ -9,31 +9,14 @@ from novaprinter import prettyPrinter
 class ilcorsaronero(object):
     url = 'https://ilcorsaronero.link/'
     name = 'Il Corsaro Nero'
-    """
-        The following categories can be joined using ';' to have a better match with categories of qBittorrent:
-        1-Film BDRip
-        2-Music
-        3-PC Games
-        5-Anime
-        6-Books
-        7-App Windows
-        8-App Linux
-        9-App Mac
-        13-PlayStation Games
-        14-XBOX Games
-        15-TV Series
-        18-Audiobooks
-        19-Film Cam
-        20-DVD
-    """
     supported_categories = {'all': '',
-                            'movies': '1;19;20',
-                            'music': '2',
-                            'games': '3;13;14',
-                            'anime': '5',
-                            'books': '6;18',
-                            'software': '7;8;9',
-                            'tv': '15'}
+                            'movies': 'film',
+                            'music': 'musica',
+                            'games': 'giochi',
+                            'anime': 'animazione',
+                            'books': 'libri',
+                            'software': 'software',
+                            'tv': 'serie-tv'}
 
     class HTMLParser:
 
@@ -56,38 +39,50 @@ class ilcorsaronero(object):
                     'leech': torrents[torrent][4],
                     'engine_url': self.url,
                     'desc_link': torrents[torrent][5],
+                    'pub_date': torrents[torrent][6]
                 }
                 prettyPrinter(data)
 
         def __findTorrents(self, html):
             torrents = []
             # Find all TR nodes with class odd or odd2
-            trs = re.findall(r'<tr class=\"odd2?\">.*?</TR>', html)
-            for tr in trs:
+            trs = re.findall(r'(<tr>.+?</tr>)', html)
+            for tr in trs[1:]: # Skip the first TR node because it's the header
                 # Extract from the A node all the needed information
                 url_titles = re.search(
-                    r'A class=\"tab\" HREF=\"(.+?)\"\s*>(.+?)?</A>.+?([0-9\.\,]+ (TB|GB|MB|KB)).+?value=\"(.+?)\".+?#[0-9a-zA-Z]{6}\'>([0-9,]+)<.+?#[0-9a-zA-Z]{6}\'>([0-9,]+)',
+                    r'href=\"(.+?)\">(.+?)</a>.+?green.+?>.*?([0-9]+).*?red.*?>.*?([0-9]+).+?([0-9\.\,]+ (?:TiB|GiB|MiB|KiB|B)).+?timestamp=\"(.+?)\"',
                     tr)
                 if url_titles:
-                    name = url_titles.group(1).split("/")[5]
+                    generic_url = '{0}{1}'.format(self.url[:-1], url_titles.group(1))
                     torrents.append([
-                        'https://itorrents.org/torrent/{0}.torrent'.format(url_titles.group(5)),
-                        str(re.sub(r'_+', ' ', name)),
-                        url_titles.group(3).replace(",", ""),
-                        url_titles.group(6).replace(",", ""),
-                        url_titles.group(7).replace(",", ""),
-                        url_titles.group(1)
+                        generic_url,
+                        url_titles.group(2),
+                        url_titles.group(5),
+                        url_titles.group(3),
+                        url_titles.group(4),
+                        generic_url,
+                        url_titles.group(6)
                     ])
             return torrents
 
+    def download_torrent(self, info):
+        torrent_page = ' '.join(retrieve_url(info).split())
+        magnet_match = re.search(r'href=\"(magnet:.*?)\"', torrent_page)
+        if magnet_match and magnet_match.groups():
+            magnet_str = magnet_match.groups()[0]
+            print(magnet_str + " " + magnet_str)
+        else:
+            raise Exception('Error, please fill a bug report!')
+
     def search(self, what, cat='all'):
+        what = what.replace("%20", "+")
         parser = self.HTMLParser(self.url)
-        counter: int = 0
-        filter = "" if cat == "all" else '&category={0}'.format(self.supported_categories[cat]) 
+        counter: int = 1
+        filter = '&cat={0}'.format(self.supported_categories[cat])
         while True:
-            url = '{0}advsearch.php?search={1}&page={2}{3}'.format(self.url, what, counter, filter)
+            url = '{0}search?q={1}&cat={2}&page={3}'.format(self.url, what, filter, counter)
             # Some replacements to format the html source
-            html = retrieve_url(url).replace("	", "").replace("\n", "").replace("\r", "").replace("n/a", "0")
+            html = ' '.join(retrieve_url(url).split())
             parser.feed(html)
             if parser.noTorrents:
                 break
