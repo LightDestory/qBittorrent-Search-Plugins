@@ -3,6 +3,7 @@
 
 import re
 from datetime import datetime
+from urllib.parse import quote, unquote
 
 from helpers import retrieve_url
 from novaprinter import prettyPrinter
@@ -55,7 +56,7 @@ class bt4g(object):
                     timestamp = int(datetime.strptime(url_titles.group(3), "%Y-%m-%d").timestamp())
                     generic_url = '{0}{1}'.format(self.url[:-1], url_titles.group(2))
                     torrent_data = [
-                        generic_url,
+                        quote(generic_url),
                         url_titles.group(1),
                         url_titles.group(4),
                         url_titles.group(6),
@@ -66,13 +67,10 @@ class bt4g(object):
                     torrents.append(torrent_data)
             return torrents
 
-    def download_torrent(self, download_url):
-        torrent_page = retrieve_url(download_url)
-        magnet_match = re.search(r'\"(magnet:.*?)\"', torrent_page)
-        if magnet_match and magnet_match.groups():
-            print('{0} {1}'.format(magnet_match.groups()[0], download_url))
-        else:
-            raise Exception('Error, please fill a bug report!')
+    def download_torrent(self, info):
+        magnet_match = re.search(r'(magnet:\?.+?)\"', retrieve_url(unquote(info)))
+        if magnet_match:
+            print('{0} {1}'.format(magnet_match.groups()[0], info))
 
     def search(self, what, cat='all'):
         cat = "" if cat == "all" else "&category={0}".format(self.supported_categories[cat])
