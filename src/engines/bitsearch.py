@@ -2,39 +2,35 @@
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
-import urllib.parse
+from datetime import datetime
+
 from helpers import retrieve_url, download_file
 from novaprinter import prettyPrinter
-from datetime import datetime
+
 
 class bitsearch(object):
     url = 'https://bitsearch.to/'
     name = 'BitSearch'
-    max_pages = 10
     supported_categories = {'all': '',
                             'movies': '&category=1&subcat=2',
                             'music': '&category=7',
                             'games': '&category=6&subcat=1',
                             'software': '&category=5&subcat=1'
                             }
-
     class HTMLParser:
 
         def __init__(self, url):
             self.url = url
-            self.pageResSize = 0
+            self.noTorrents = False
 
         def feed(self, html):
-            self.pageResSize = 0
+            self.noTorrents = False
             torrents = self.__findTorrents(html)
             resultSize = len(torrents)
             if resultSize == 0:
+                self.noTorrents = True
                 return
-            else:
-                self.pageResSize = resultSize
-                count = 0
             for torrent in range(resultSize):
-                count = count + 1
                 data = {
                     'link': torrents[torrent][0],
                     'name': torrents[torrent][1],
@@ -52,7 +48,6 @@ class bitsearch(object):
             trs = re.findall(
                 r'<li class=\"card search-result my-2\">.+?</li>', html)
             for tr in trs:
-                # Extract from the A node all the needed information
                 url_titles = re.search(
                     r'.+?href=\"(.+?)\".+?token.+?>(.+?)<.+?Size.+?>([0-9\,\.]+ (TB|GB|MB|KB)).+?color.+?>([0-9,]+).+?color.+?>([0-9,]+).+?Date.+?>(.+?)<.+?href=\"(.+?)\"',
                     tr)
@@ -76,10 +71,12 @@ class bitsearch(object):
 
     def search(self, what, cat='all'):
         parser = self.HTMLParser(self.url)
-        for currPage in range(1, self.max_pages):
-            url = '{0}search?q={1}&page={2}{3}'.format(self.url, what, currPage, self.supported_categories[cat])
+        current_page = 1
+        while True:
+            url = '{0}search?q={1}&page={2}{3}'.format(self.url, what, current_page, self.supported_categories[cat])
             # Some replacements to format the html source
             html = re.sub(r'\s+', ' ', retrieve_url(url)).strip()
             parser.feed(html)
-            if parser.pageResSize <= 0:
+            if parser.noTorrents:
                 break
+            current_page += 1
