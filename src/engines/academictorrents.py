@@ -2,12 +2,11 @@
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import sys
-from pathlib import Path
-from datetime import date
-from urllib import request
 import xml.etree.ElementTree as ET
+from datetime import date
+from pathlib import Path
+from urllib import request
 
-from helpers import retrieve_url
 from novaprinter import prettyPrinter
 
 DATABASE_URL = "https://academictorrents.com/database.xml"
