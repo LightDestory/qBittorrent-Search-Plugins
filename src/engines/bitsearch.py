@@ -3,8 +3,9 @@
 
 import re
 from datetime import datetime
+from urllib.parse import quote, unquote
 
-from helpers import retrieve_url, download_file
+from helpers import retrieve_url
 from novaprinter import prettyPrinter
 
 
@@ -49,13 +50,13 @@ class bitsearch(object):
                 r'<li class=\"card search-result my-2\">.+?</li>', html)
             for tr in trs:
                 url_titles = re.search(
-                    r'.+?href=\"(.+?)\".+?token.+?>(.+?)<.+?Size.+?>([0-9\,\.]+ (TB|GB|MB|KB)).+?color.+?>([0-9,]+).+?color.+?>([0-9,]+).+?Date.+?>(.+?)<.+?href=\"(.+?)\"',
+                    r'.+?href=\"(.+?)\".+?token.+?>(.+?)<.+?Size.+?>([0-9\,\.]+ (TB|GB|MB|KB)).+?color.+?>([0-9,]+).+?color.+?>([0-9,]+).+?Date.+?>(.+?)<.+?(magnet.+?)\"',
                     tr)
                 if url_titles:
                     timestamp = int(datetime.strptime(url_titles.group(7), "%b %d, %Y").timestamp())
                     generic_url = '{0}{1}'.format(self.url[:-1], url_titles.group(1))
                     torrent_data = [
-                        url_titles.group(8),
+                        quote(url_titles.group(8)),
                         url_titles.group(2),
                         url_titles.group(3),
                         url_titles.group(5),
@@ -67,7 +68,8 @@ class bitsearch(object):
             return torrents
 
     def download_torrent(self, download_url):
-        print(download_file(download_url))
+        unquoted_magnet = unquote(download_url)
+        print(unquoted_magnet + " " + unquoted_magnet)
 
     def search(self, what, cat='all'):
         parser = self.HTMLParser(self.url)
