@@ -50,7 +50,7 @@ class bt4g(object):
                 r'<div class=\"list-group-item result-item\">.+?</div>', html)
             for tr in trs:
                 url_titles = re.search(
-                    r'..+?title=\"(.+?)\" href=\"(.+?)\".+?Creation Time: (.+?)<.+?Total Size.+?>([0-9\,\.]+(TB|GB|MB|KB)).+?seeders\">([0-9,]+).+?leechers\">([0-9,]+)',
+                    r'.+?title=\"(.+?)\" href=\"(.+?)\".+?Creation Time: (.+?)<.+?Total Size.+?>([0-9\,\.]+(TB|GB|MB|KB)).+?seeders\">([0-9,]+).+?leechers\">([0-9,]+)',
                     tr)
                 if url_titles:
                     timestamp = int(datetime.strptime(url_titles.group(3), "%Y-%m-%d").timestamp())
