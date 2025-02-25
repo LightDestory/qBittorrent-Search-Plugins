@@ -3,6 +3,7 @@
 
 import re
 import urllib.parse
+
 from helpers import retrieve_url, download_file
 from novaprinter import prettyPrinter
 
@@ -19,16 +20,15 @@ class yourbittorrent(object):
 
         def __init__(self, url):
             self.url = url
-            self.pageResSize = 0
+            self.noTorrents = False
 
         def feed(self, html):
-            self.pageResSize = 0
+            self.noTorrents = False
             torrents = self.__findTorrents(html)
             resultSize = len(torrents)
             if resultSize == 0:
+                self.noTorrents = True
                 return
-            else:
-                self.pageResSize = resultSize
             for torrent in range(resultSize):
                 data = {
                     'link': torrents[torrent][0],
@@ -74,5 +74,5 @@ class yourbittorrent(object):
         category = "" if cat == "all" else f'&c={self.supported_categories[cat]}'
         url = '{0}?q={1}{2}'.format(self.url, what, category)
         # Some replacements to format the html source
-        html = retrieve_url(url).replace("	", "").replace("\n", "").replace("\r", "")
+        html = re.sub(r'\s+', ' ', retrieve_url(url)).strip()
         parser.feed(html)

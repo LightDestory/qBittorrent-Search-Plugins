@@ -2,6 +2,7 @@
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
+
 from helpers import retrieve_url
 from novaprinter import prettyPrinter
 
@@ -81,8 +82,7 @@ class ilcorsaronero(object):
         filter = '&cat={0}'.format(self.supported_categories[cat])
         while True:
             url = '{0}search?q={1}&cat={2}&page={3}'.format(self.url, what, filter, counter)
-            # Some replacements to format the html source
-            html = ' '.join(retrieve_url(url).split())
+            html = re.sub(r'\s+', ' ', retrieve_url(url)).strip()
             parser.feed(html)
             if parser.noTorrents:
                 break

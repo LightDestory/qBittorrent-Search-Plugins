@@ -3,6 +3,7 @@
 
 import re
 import urllib.parse
+
 from helpers import retrieve_url
 from novaprinter import prettyPrinter
 
@@ -62,7 +63,7 @@ class btetree(object):
         counter = 0
         while True:
             url = '{0}index.php?searchzzzz={1}&cat=0&page={2}'.format(self.url, what, 50 * counter)
-            html = retrieve_url(url).replace("	", "").replace("\n", "").replace("\r", "")
+            html = re.sub(r'\s+', ' ', retrieve_url(url)).strip()
             parser.feed(html)
             if parser.noTorrents:
                 break

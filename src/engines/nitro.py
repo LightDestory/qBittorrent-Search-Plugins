@@ -1,8 +1,11 @@
 # VERSION: 1.0
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
+# WEBSITE DEAD
+
 import re
 import urllib.parse
+
 from helpers import retrieve_url
 from novaprinter import prettyPrinter
 

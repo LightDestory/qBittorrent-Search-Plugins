@@ -2,8 +2,8 @@
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
-import urllib.parse
-from helpers import retrieve_url, download_file
+
+from helpers import retrieve_url
 from novaprinter import prettyPrinter
 
 
@@ -62,14 +62,6 @@ class torrentdownload(object):
             return torrents
 
     def download_torrent(self, download_url):
-        # Temporary removed due to https://github.com/qbittorrent/search-plugins/issues/229
-        #torrent_page = retrieve_url(urllib.parse.unquote(download_url))
-        #magnet_match = re.search(r'\"(magnet:.*?)\"', torrent_page)
-        #if magnet_match and magnet_match.groups():
-        #    magnet_str = magnet_match.groups()[0]
-        #    print(magnet_str + " " + magnet_str)
-        #else:
-        #    raise Exception('Error, please fill a bug report!')
         print(download_url + " " + download_url)
 
     def search(self, what, cat='all'):
@@ -78,7 +70,7 @@ class torrentdownload(object):
         for currPage in range(1, self.max_pages):
             url = '{0}search?q={1}&p={2}'.format(self.url, what, currPage)
             # Some replacements to format the html source
-            html = retrieve_url(url).replace("	", "").replace("\n", "").replace("\r", "")
+            html = re.sub(r'\s+', ' ', retrieve_url(url)).strip()
             parser.feed(html)
             if parser.pageResSize <= 0:
                 break

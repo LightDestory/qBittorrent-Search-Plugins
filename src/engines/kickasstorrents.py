@@ -3,6 +3,7 @@
 
 import re
 from time import sleep
+
 from helpers import retrieve_url
 from novaprinter import prettyPrinter
 
@@ -63,8 +64,7 @@ class kickasstorrents(object):
         while True:
             url = '{0}search/{1}/{2}{3}/'.format(self.url, what, category, counter)
             # Some replacements to format the html source
-            html = retrieve_url(url).replace("	", "").replace("\n", "").replace("\r", "")\
-                .replace("<strong class=\"red\">", "").replace("</strong>", "")
+            html = re.sub(r'\s+', ' ', retrieve_url(url)).strip().replace("<strong class=\"red\">", "").replace("</strong>", "")
             parser.feed(html)
             if parser.noTorrents:
                 break

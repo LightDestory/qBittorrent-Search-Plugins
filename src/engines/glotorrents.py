@@ -3,6 +3,7 @@
 
 import re
 from time import sleep
+
 from helpers import retrieve_url
 from novaprinter import prettyPrinter
 
@@ -65,8 +66,7 @@ class glotorrents(object):
         while True:
             url = '{0}search_results.php?search={1}&cat={2}&page={3}'.format(self.url, what,
                                                                              self.supported_categories[cat], counter)
-            # Some replacements to format the html source
-            html = retrieve_url(url).replace("	", "").replace("\n", "").replace("\r", "")
+            html = re.sub(r'\s+', ' ', retrieve_url(url)).strip()
             parser.feed(html)
             if parser.noTorrents:
                 break

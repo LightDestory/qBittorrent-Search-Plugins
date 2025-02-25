@@ -2,7 +2,8 @@
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
-from helpers import retrieve_url, download_file
+
+from helpers import retrieve_url
 from novaprinter import prettyPrinter
 
 
@@ -65,8 +66,7 @@ class rockbox(object):
         counter: int = 0
         while True:
             url = '{0}torrents.php?active=0&search={1}&options=0&order=data&page={2}'.format(self.url, what, counter)
-            # Some replacements to format the html source
-            html = retrieve_url(url).replace("	", "").replace("\n", "").replace("\r", "")
+            html = re.sub(r'\s+', ' ', retrieve_url(url)).strip()
             parser.feed(html)
             if parser.noTorrents:
                 break

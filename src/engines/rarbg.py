@@ -1,6 +1,8 @@
 # VERSION: 1.1
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
+# WEBSITE DEAD
+
 import re
 import urllib.parse
 
