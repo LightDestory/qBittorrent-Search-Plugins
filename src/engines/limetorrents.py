@@ -48,7 +48,7 @@ class limetorrents(object):
             torrents = []
             search_table = re.findall(r'<table .+?>.+?</table>', html)[1]
             trs = re.findall(
-                r'<tr.+?">.+?</tr>', search_table)[1:]
+                r'<tr.+?>.+?</tr>', search_table)[1:]
             for tr in trs:
                 url_titles = re.search(
                     r'.+?href=\"(.+?\") rel.+?href=\"(.+?)\".+?([0-9\,\.]+\s?(TB|GB|MB|KB)).+?tdseed\">([0-9,]+).+?tdleech\">([0-9,]+)',
