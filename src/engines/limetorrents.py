@@ -1,5 +1,5 @@
 # VERSION: 1.1
-# AUTHORS: LightDestory, Partakithware (https://github.com/LightDestory)
+# AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
 import sys
