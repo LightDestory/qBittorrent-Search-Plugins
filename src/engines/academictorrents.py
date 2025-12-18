@@ -1,16 +1,17 @@
-# VERSION: 1.2
-# AUTHORS: LightDestory (https://github.com/LightDestory)
-
+# VERSION: 1.3
+# AUTHORS: LightDestory (https://github.com/LightDestory) achernet (https://github.com/achernet)
+import concurrent.futures
+import re
 import sys
 import xml.etree.ElementTree as ET
-from datetime import date
+from datetime import date, datetime
 from pathlib import Path
 from urllib import request
 
-from novaprinter import prettyPrinter
+from helpers import retrieve_url
+from novaprinter import prettyPrinter, SearchResults
 
 DATABASE_URL = "https://academictorrents.com/database.xml"
-FILTERS = []
 home = str(Path.home())
 system_paths = {
     'win32': f"{home}/AppData/Roaming",
@@ -30,24 +31,14 @@ class academictorrents(object):
     """
     supported_categories = {'all': '0'}
 
-    def _parseXML(self, collection):
-        for torrent in collection:
-            data = {
-                'link': f"{self.url}/download/{torrent.findtext('infohash')}.torrent",
-                'name': torrent.findtext("title"),
-                'size': torrent.findtext("size"),
-                'seeds': -1,
-                'leech': -1,
-                'engine_url': self.url,
-                'desc_link': torrent.findtext("link")
-            }
-            prettyPrinter(data)
+    def __init__(self, output=True):
+        self.output = output
+        self.filters = []
 
     def _torrent_filter(self, item) -> bool:
-        global FILTERS
         title: str = item.findtext("title").lower()
         desc: str = item.findtext("description").lower()
-        for f in FILTERS:
+        for f in self.filters:
             if f in title or f in desc:
                 return True
         return False
@@ -76,10 +67,39 @@ class academictorrents(object):
         f.close()
         req.close()
 
+    def resolve_search_result(self, torrent) -> SearchResults:
+        data = {
+            'link': f"{self.url}download/{torrent.findtext('infohash')}.torrent",
+            'name': torrent.findtext("title"),
+            'size': torrent.findtext("size"),
+            'engine_url': self.url,
+            'desc_link': torrent.findtext("link"),
+        }
+        torrent_desc = retrieve_url(f"{data['desc_link']}/tech")
+        peer_data = re.search(
+            '<tr><td>Mirrors</td><td>(\\d+)\\s*complete,\\s*(\\d+)\\s*downloading',
+            torrent_desc
+        )
+        if peer_data:
+            data["seeds"] = int(peer_data.group(1))
+            data["leech"] = int(peer_data.group(2))
+        else:
+            data["leech"] = -1
+            data["seeds"] = -1
+        added_date_data = re.search('<tr><td>Added</td><td>([^<]+)</td></tr>', torrent_desc)
+        date_str = added_date_data.group(1)
+        data["pub_date"] = int(datetime.fromisoformat(date_str).timestamp())
+        return SearchResults(**data)
 
     def search(self, what, cat='all'):
-        global FILTERS
-        FILTERS = [f.lower() for f in str(what).split("%20")]
+        self.filters = [f.lower() for f in re.split('%20|\\s', str(what))]
         db = self._retrieve_database()
-        filtered = list(filter(self._torrent_filter, db.findall("channel/item")))
-        self._parseXML(filtered)
+        with concurrent.futures.ThreadPoolExecutor() as executor:
+            futures = []
+            for torrent in db.findall("channel/item"):
+                if self._torrent_filter(torrent):
+                    futures.append(executor.submit(self.resolve_search_result, torrent))
+            for future in concurrent.futures.as_completed(futures):
+                result = future.result()
+                if self.output:
+                    prettyPrinter(result)
