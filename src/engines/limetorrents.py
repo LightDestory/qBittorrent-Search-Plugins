@@ -1,7 +1,8 @@
-# VERSION: 1.0
+# VERSION: 1.1
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
+import sys
 from urllib.parse import quote, unquote
 
 from helpers import retrieve_url, download_file
@@ -57,7 +58,7 @@ class limetorrents(object):
                     generic_url = '{0}{1}'.format(self.url[:-1], url_titles.group(2))
                     name = url_titles.group(1).split("title=",1)[1].replace("-", " ")
                     torrent_data = [
-                        quote(url_titles.group(1)),
+                        url_titles.group(1).strip('"\' '),
                         name,
                         url_titles.group(3),
                         url_titles.group(5),
@@ -68,7 +69,29 @@ class limetorrents(object):
             return torrents
 
     def download_torrent(self, info):
-        print(download_file(unquote(info)))
+        try:
+            info = unquote(info.strip(' "\''))
+            if info.startswith(self.url):
+                html = retrieve_url(info)
+                # Try to extract magnet link first
+                magnet_match = re.search(r'href="(magnet:\?xt=urn:btih:[^"]+)"', html)
+                if magnet_match:
+                    magnet_link = magnet_match.group(1)
+                    print(download_file(magnet_link))
+                    return
+                # If no magnet, try .torrent link extraction
+                torrent_match = re.search(r'href="(http[^"]+\.torrent[^"]*)"', html)
+                if torrent_match:
+                    torrent_url = torrent_match.group(1)
+                    print(download_file(torrent_url))
+                    return
+                print(f"Could not find magnet or torrent link on page: {info}", file=sys.stderr)
+            else:
+                # info might be magnet or torrent link directly
+                print(download_file(info))
+        except Exception as e:
+            print(f"Error in download_torrent: {e}", file=sys.stderr)
+
 
     def search(self, what, cat='all'):
         what = what.replace('%20', '-')
