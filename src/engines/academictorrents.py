@@ -1,4 +1,4 @@
-# VERSION: 1.3
+# VERSION: 1.4
 # AUTHORS: LightDestory (https://github.com/LightDestory) achernet (https://github.com/achernet)
 import concurrent.futures
 import re
@@ -8,28 +8,28 @@ from datetime import date, datetime
 from pathlib import Path
 from urllib import request
 
-from helpers import retrieve_url
+from helpers import retrieve_url, download_file
 from novaprinter import prettyPrinter, SearchResults
 
 DATABASE_URL = "https://academictorrents.com/database.xml"
 home = str(Path.home())
 system_paths = {
-    'win32': f"{home}/AppData/Roaming",
-    'linux': f"{home}/.local/share",
-    'darwin': f"{home}/Library/Application Support",
+    "win32": f"{home}/AppData/Roaming",
+    "linux": f"{home}/.local/share",
+    "darwin": f"{home}/Library/Application Support",
 }
 cache_path = Path(f"{system_paths[sys.platform]}/qbit_plugins_data/academic_cache.xml")
 
 
 class academictorrents(object):
-    url = 'https://academictorrents.com/'
-    name = 'AcademicTorrents'
+    url = "https://academictorrents.com/"
+    name = "AcademicTorrents"
     """ 
     ***TLDR; It is safer to force an 'all' research***
         AcademicTorrents categories are very specific
         qBittorrent does not provide enough categories to implement a good filtering.
     """
-    supported_categories = {'all': '0'}
+    supported_categories = {"all": "0"}
 
     def __init__(self, output=True):
         self.output = output
@@ -69,16 +69,16 @@ class academictorrents(object):
 
     def resolve_search_result(self, torrent) -> SearchResults:
         data = {
-            'link': f"{self.url}download/{torrent.findtext('infohash')}.torrent",
-            'name': torrent.findtext("title"),
-            'size': torrent.findtext("size"),
-            'engine_url': self.url,
-            'desc_link': torrent.findtext("link"),
+            "link": f"{self.url}download/{torrent.findtext('infohash')}.torrent",
+            "name": torrent.findtext("title"),
+            "size": torrent.findtext("size"),
+            "engine_url": self.url,
+            "desc_link": torrent.findtext("link"),
         }
         torrent_desc = retrieve_url(f"{data['desc_link']}/tech")
         peer_data = re.search(
-            '<tr><td>Mirrors</td><td>(\\d+)\\s*complete,\\s*(\\d+)\\s*downloading',
-            torrent_desc
+            "<tr><td>Mirrors</td><td>(\\d+)\\s*complete,\\s*(\\d+)\\s*downloading",
+            torrent_desc,
         )
         if peer_data:
             data["seeds"] = int(peer_data.group(1))
@@ -86,13 +86,18 @@ class academictorrents(object):
         else:
             data["leech"] = -1
             data["seeds"] = -1
-        added_date_data = re.search('<tr><td>Added</td><td>([^<]+)</td></tr>', torrent_desc)
+        added_date_data = re.search(
+            "<tr><td>Added</td><td>([^<]+)</td></tr>", torrent_desc
+        )
         date_str = added_date_data.group(1)
         data["pub_date"] = int(datetime.fromisoformat(date_str).timestamp())
         return SearchResults(**data)
 
-    def search(self, what, cat='all'):
-        self.filters = [f.lower() for f in re.split('%20|\\s', str(what))]
+    def download_torrent(self, info):
+        print(download_file(info))
+
+    def search(self, what, cat="all"):
+        self.filters = [f.lower() for f in re.split("%20|\\s", str(what))]
         db = self._retrieve_database()
         with concurrent.futures.ThreadPoolExecutor() as executor:
             futures = []
