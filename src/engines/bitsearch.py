@@ -1,7 +1,8 @@
-# VERSION: 1.0
+# VERSION: 1.1
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
+from time import sleep
 from datetime import datetime
 from urllib.parse import quote, unquote
 
@@ -13,10 +14,12 @@ class bitsearch(object):
     url = 'https://bitsearch.to/'
     name = 'BitSearch'
     supported_categories = {'all': '',
-                            'movies': '&category=1&subcat=2',
+                            'movies': '&category=2',
                             'music': '&category=7',
-                            'games': '&category=6&subcat=1',
-                            'software': '&category=5&subcat=1'
+                            'games': '&category=6',
+                            'software': '&category=5',
+                            'tv': '&category=3',
+                            'anime': '&category=4',
                             }
     class HTMLParser:
 
@@ -47,20 +50,20 @@ class bitsearch(object):
         def __findTorrents(self, html):
             torrents = []
             trs = re.findall(
-                r'<li class=\"card search-result my-2\">.+?</li>', html)
+                r'<div class=\"bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition duration-150 ease-in-out\">.+?</div>\s?<\!-- Mobile', html)
             for tr in trs:
                 url_titles = re.search(
-                    r'.+?href=\"(.+?)\".+?token.+?>(.+?)<.+?Size.+?>([0-9\,\.]+ (TB|GB|MB|KB)).+?color.+?>([0-9,]+).+?color.+?>([0-9,]+).+?Date.+?>(.+?)<.+?(magnet.+?)\"',
+                    r'.+?href=\"(.+?)\".+?\"> (.+?) </a>.+?([0-9\,\.]+ (TB|GB|MB|KB)).+?i> <span>(.+?)</span>.+?medium\">(\d+).+?medium\">(\d).+?href=\"(magnet.+?)\"',
                     tr)
                 if url_titles:
-                    timestamp = int(datetime.strptime(url_titles.group(7), "%b %d, %Y").timestamp())
                     generic_url = '{0}{1}'.format(self.url[:-1], url_titles.group(1))
+                    timestamp = int(datetime.strptime(url_titles.group(5), '%m/%d/%Y').timestamp())
                     torrent_data = [
                         quote(url_titles.group(8)),
                         url_titles.group(2),
                         url_titles.group(3),
-                        url_titles.group(5),
                         url_titles.group(6),
+                        url_titles.group(7),
                         generic_url,
                         timestamp
                     ]
@@ -72,13 +75,15 @@ class bitsearch(object):
         print(unquoted_magnet + " " + unquoted_magnet)
 
     def search(self, what, cat='all'):
+        what = what.replace('%20', '+')
         parser = self.HTMLParser(self.url)
         current_page = 1
         while True:
-            url = '{0}search?q={1}&page={2}{3}'.format(self.url, what, current_page, self.supported_categories[cat])
+            url = '{0}search?q={1}&page={2}{3}&sortBy=relevance'.format(self.url, what, current_page, self.supported_categories[cat])
             # Some replacements to format the html source
             html = re.sub(r'\s+', ' ', retrieve_url(url)).strip()
             parser.feed(html)
             if parser.noTorrents:
                 break
             current_page += 1
+            sleep(5)  # To avoid hitting the server too hard
