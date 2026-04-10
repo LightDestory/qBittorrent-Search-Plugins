@@ -1,10 +1,11 @@
-# VERSION: 1.1
+# VERSION: 1.2
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
-
+from datetime import datetime
 from helpers import retrieve_url
 from novaprinter import prettyPrinter
+from urllib.parse import quote, unquote
 
 
 class rockbox(object):
@@ -37,28 +38,35 @@ class rockbox(object):
                     'seeds': torrents[torrent][3],
                     'leech': torrents[torrent][4],
                     'engine_url': self.url,
-                    'desc_link': torrents[torrent][5]
+                    'desc_link': torrents[torrent][5],
+                    'pub_date': torrents[torrent][6]
                 }
                 prettyPrinter(data)
 
         def __findTorrents(self, html):
             torrents = []
-            trs = re.findall(r'<TR><td align=\"center\".*?</TR>', html)
+            trs = re.findall(r'<TR>\s<td align=\"center\".*?</TR>', html)
             for tr in trs:
                 # Extract from the A node all the needed information
                 url_titles = re.search(
-                    r'.+?HREF=\"(.+?)\".+?details\: ?(.+?)\">.+?rating.+?HREF=(.+?)>.+?([0-9\,\.]+ (TB|GB|MB|KB)).+?peers details\">([0-9,]+).+?peers details\">([0-9,]+).+?',
+                    r'HREF=\"(details.+?)\".+?details\:\s?(.+?)\">.+?HREF=(download.+?)>.+?lista\">(.+?)</td>.+?([0-9\,\.]+ (TB|GB|MB|KB)).+?peers details\">([0-9,]+).+?peers details\">([0-9,]+)',
                     tr)
                 if url_titles:
+                    timestamp = int(datetime.strptime(url_titles.group(4), "%d/%m/%Y").timestamp())
                     torrents.append([
-                        '{0}{1}'.format(self.url, url_titles.group(3)),
+                        quote('{0}{1}'.format(self.url, url_titles.group(3))),
                         url_titles.group(2),
-                        url_titles.group(4).replace(",", ""),
-                        url_titles.group(6).replace(",", ""),
-                        url_titles.group(7).replace(",", ""),
-                        '{0}{1}'.format(self.url, url_titles.group(1))
+                        url_titles.group(5),
+                        url_titles.group(7),
+                        url_titles.group(8),
+                        '{0}{1}'.format(self.url, url_titles.group(1)),
+                        timestamp
                     ])
             return torrents
+        
+    def download_torrent(self, download_url):
+        unquoted_magnet = unquote(download_url)
+        print(unquoted_magnet + " " + unquoted_magnet)
 
     def search(self, what, cat='all'):
         what = what.replace("%20", "+")
