@@ -21,7 +21,7 @@
 
 </div>
 
-<!-- ToC -->\
+<!-- ToC -->
 
 <details>
   <summary>Table of Contents</summary>
