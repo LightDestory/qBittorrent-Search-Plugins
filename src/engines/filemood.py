@@ -1,9 +1,9 @@
-# VERSION: 1.0
+# VERSION: 1.1
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
 from urllib.parse import quote, unquote
-
+from time import sleep
 from helpers import retrieve_url
 from novaprinter import prettyPrinter
 
@@ -75,3 +75,4 @@ class filemood(object):
             if parser.noTorrents:
                 break
             current_page += 1
+            sleep(5)
