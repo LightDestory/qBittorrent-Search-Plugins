@@ -53,7 +53,7 @@ class bitsearch(object):
                 r'<div class=\"bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition duration-150 ease-in-out\">.+?</div>\s?<\!-- Mobile', html)
             for tr in trs:
                 url_titles = re.search(
-                    r'.+?href=\"(.+?)\".+?\"> (.+?) </a>.+?([0-9\,\.]+ (TB|GB|MB|KB)).+?i> <span>(.+?)</span>.+?medium\">(\d+).+?medium\">(\d).+?href=\"(magnet.+?)\"',
+                    r'.+?href=\"(.+?)\".+?\"> (.+?) </a>.+?([0-9\,\.]+ (TB|GB|MB|KB)).+?i> <span>(.+?)</span>.+?medium\">([0-9\,\.]+).+?medium\">([0-9\,\.]+).+?href=\"(magnet.+?)\"',
                     tr)
                 if url_titles:
                     generic_url = '{0}{1}'.format(self.url[:-1], url_titles.group(1))
