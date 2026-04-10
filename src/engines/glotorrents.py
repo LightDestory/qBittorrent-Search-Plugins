@@ -1,4 +1,4 @@
-# VERSION: 1.6
+# VERSION: 1.7
 # AUTHORS: LightDestory (https://github.com/LightDestory), BurningMop (https://github.com/BurningMop)
 
 import re
@@ -41,7 +41,7 @@ class glotorrents(object):
         def __findTorrents(self, html):
             torrents = []
             trs = re.findall(
-                r'<tr class=\'t-row\'><td class=\'ttable_col1\' align=\'center\' valign=\'middle\'>.+?</tr>', html)
+                r'<tr class=\'t-row\'> <td class=\'ttable_col1\'.+?</tr>', html)
             for tr in trs:
                 # Extract from the A node all the needed information
                 url_titles = re.search(
@@ -64,7 +64,7 @@ class glotorrents(object):
         parser = self.HTMLParser(self.url)
         counter: int = 0
         while True:
-            url = '{0}search_results.php?search={1}&cat={2}&page={3}'.format(self.url, what,
+            url = '{0}search_results.php?search={1}&cat={2}&page={3}&incldead=0&inclexternal=0'.format(self.url, what,
                                                                              self.supported_categories[cat], counter)
             html = re.sub(r'\s+', ' ', retrieve_url(url)).strip()
             parser.feed(html)
