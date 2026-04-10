@@ -1,12 +1,14 @@
-#VERSION: 1.00
-#AUTHORS: YOUR_NAME (YOUR_MAIL)
+# VERSION: 1.00
+# AUTHORS: YOUR_NAME (YOUR_MAIL)
 
 # LICENSING INFORMATION
 
+import re
 from helpers import download_file, retrieve_url
 from novaprinter import prettyPrinter
-import sgmllib
+from time import sleep
 # some other imports if necessary
+
 
 class engine_name(object):
     """
@@ -18,9 +20,18 @@ class engine_name(object):
     `supported_categories`: What categories are supported by the search engine and their corresponding id,
     possible categories are ('all', 'movies', 'tv', 'music', 'games', 'anime', 'software', 'pictures', 'books').
     """
-    url = 'http://www.engine-url.org'
-    name = 'Full engine name'
-    supported_categories = {'all': '0', 'movies': '6', 'tv': '4', 'music': '1', 'games': '2', 'anime': '7', 'software': '3'}
+
+    url = "http://www.engine-url.org"
+    name = "Full engine name"
+    supported_categories = {
+        "all": "0",
+        "movies": "6",
+        "tv": "4",
+        "music": "1",
+        "games": "2",
+        "anime": "7",
+        "software": "3",
+    }
 
     def __init__(self):
         """
@@ -34,11 +45,11 @@ class engine_name(object):
         implementation in case the search engine in question does not allow
         traditional downloads (for example, cookie-based download).
         """
-        print download_file(info)
+        print(download_file(info))
 
     # DO NOT CHANGE the name and parameters of this function
     # This function will be the one called by nova2.py
-    def search(self, what, cat='all'):
+    def search(self, what, cat="all"):
         """
         Here you can do what you want to get the result from the search engine website.
         Everytime you parse a result line, store it in a dictionary
@@ -48,3 +59,5 @@ class engine_name(object):
         `cat` is the name of a search category in ('all', 'movies', 'tv', 'music', 'games', 'anime', 'software', 'pictures', 'books')
         """
 
+        # Always set a sleep(3) after each request to the search engine website, otherwise you might get banned by the search engine.
+        sleep(3)
