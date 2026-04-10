@@ -65,6 +65,5 @@ class kickasstorrents(object):
             html = re.sub("<strong[^>]*>|</strong>", "", html)
             parser.feed(html)
             if parser.noTorrents:
-                print("no torrents")
                 break
             counter += 1
