@@ -1,4 +1,4 @@
-# VERSION: 1.2
+# VERSION: 1.3
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
@@ -9,7 +9,7 @@ from novaprinter import prettyPrinter
 
 
 class pirateiro(object):
-    url = 'https://pirateiro.com/'
+    url = 'https://pirateiro.io/'
     name = 'Pirateiro'
     supported_categories = {
         'all': '0',
