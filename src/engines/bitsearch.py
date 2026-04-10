@@ -56,7 +56,7 @@ class bitsearch(object):
             )
             for tr in trs:
                 url_titles = re.search(
-                    r".+?href=\"(.+?)\".+?\"> (.+?) </a>.+?([0-9\,\.]+ (TB|GB|MB|KB)).+?i> <span>(.+?)</span>.+?medium\">([0-9\,\.]+).+?medium\">([0-9\,\.]+).+?href=\"(magnet.+?)\"",
+                    r".+?href=\"(.+?)\".+?\">\s?(.+?) </a>.+?([0-9\,\.]+ (TB|GB|MB|KB)).+?i> <span>(.+?)</span>.+?medium\">([0-9\,\.]+).+?medium\">([0-9\,\.]+).+?href=\"(magnet.+?)\"",
                     tr,
                 )
                 if url_titles:
