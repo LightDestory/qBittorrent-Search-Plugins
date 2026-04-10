@@ -89,7 +89,7 @@ class rutor(object):
             return torrents
 
     def download_torrent(self, info):
-        print(info)
+        print(info + " " + info)
 
     def search(self, what, cat="all"):
         parser = self.HTMLParser(self.url)
