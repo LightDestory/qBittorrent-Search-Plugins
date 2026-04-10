@@ -1,4 +1,4 @@
-# VERSION: 1.1
+# VERSION: 1.2
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
@@ -10,7 +10,7 @@ from novaprinter import prettyPrinter
 
 
 class limetorrents(object):
-    url = 'https://www.limetorrents.lol/'
+    url = 'https://www.Limetor.com/'
     name = 'LimeTorrents'
     supported_categories = {'all': 'all',
                             'anime': 'anime',
