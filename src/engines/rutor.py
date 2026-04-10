@@ -34,6 +34,7 @@ class rutor(object):
         "games": "8",
         "anime": "10",
         "software": "9",
+        "books": "11",
     }
 
     class HTMLParser:

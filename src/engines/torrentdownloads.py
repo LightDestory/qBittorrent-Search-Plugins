@@ -20,6 +20,7 @@ class torrentdownloads(object):
         "games": "3",
         "anime": "1",
         "software": "7",
+        "books": "2",
     }
 
     class HTMLParser:

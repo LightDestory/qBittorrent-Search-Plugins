@@ -15,12 +15,13 @@ class bitsearch(object):
     name = "BitSearch"
     supported_categories = {
         "all": "",
-        "movies": "&category=2",
-        "music": "&category=7",
-        "games": "&category=6",
-        "software": "&category=5",
-        "tv": "&category=3",
-        "anime": "&category=4",
+        "movies": "2",
+        "music": "7",
+        "games": "6",
+        "software": "5",
+        "tv": "3",
+        "anime": "4",
+        "books": "9",
     }
 
     class HTMLParser:
@@ -82,11 +83,12 @@ class bitsearch(object):
 
     def search(self, what, cat="all"):
         what = what.replace("%20", "+")
+        cat = "" if cat == "all" else f"&category={self.supported_categories[cat]}"
         parser = self.HTMLParser(self.url)
         current_page = 1
         while True:
             url = "{0}search?q={1}&page={2}{3}&sortBy=relevance".format(
-                self.url, what, current_page, self.supported_categories[cat]
+                self.url, what, current_page, cat
             )
             # Some replacements to format the html source
             html = re.sub(r"\s+", " ", retrieve_url(url)).strip()

@@ -19,6 +19,8 @@ class glotorrents(object):
         "games": "10",
         "anime": "28",
         "software": "18",
+        "books": "51",
+        "pictures": "70",
     }
 
     class HTMLParser:
