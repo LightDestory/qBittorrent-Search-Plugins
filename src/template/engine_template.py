@@ -7,7 +7,7 @@ import re
 from helpers import download_file, retrieve_url
 from novaprinter import prettyPrinter
 from time import sleep
-# some other imports if necessary
+from datetime import datetime
 
 
 class engine_name(object):
@@ -33,10 +33,49 @@ class engine_name(object):
         "software": "3",
     }
 
-    def __init__(self):
-        """
-        some initialization
-        """
+    class HTMLParser:
+        def __init__(self, url):
+            self.url = url
+            self.noTorrents = False
+
+        def feed(self, html):
+            self.noTorrents = False
+            torrents = self.__findTorrents(html)
+            if len(torrents) == 0:
+                self.noTorrents = True
+                return
+            for torrent in range(len(torrents)):
+                data = {
+                    "link": torrents[torrent][0],
+                    "name": torrents[torrent][1],
+                    "size": torrents[torrent][2],
+                    "seeds": torrents[torrent][3],
+                    "leech": torrents[torrent][4],
+                    "engine_url": self.url,
+                    "desc_link": torrents[torrent][5],
+                    "pub_date": torrents[torrent][6],
+                }
+                prettyPrinter(data)
+
+        def __findTorrents(self, html):
+            torrents = []
+            trs = re.findall(r"SINGLE_CONTAINER_REGEX", html)
+            for tr in trs:
+                url_titles = re.search(r"EXTRACTING_REGEX", tr)
+                if url_titles:
+                    # Get Unix timestamp if possible using datetime.timestamp() function, otherwise set it to -1
+                    timestamp = -1
+                    torrent_data = [
+                        url_titles.group(-1),
+                        url_titles.group(-1),
+                        url_titles.group(-1),
+                        url_titles.group(-1),
+                        url_titles.group(-1),
+                        "{0}{1}".format(self.url, url_titles.group(-1)),
+                        timestamp,
+                    ]
+                    torrents.append(torrent_data)
+            return torrents
 
     def download_torrent(self, info):
         """
@@ -47,17 +86,18 @@ class engine_name(object):
         """
         print(download_file(info))
 
-    # DO NOT CHANGE the name and parameters of this function
-    # This function will be the one called by nova2.py
     def search(self, what, cat="all"):
-        """
-        Here you can do what you want to get the result from the search engine website.
-        Everytime you parse a result line, store it in a dictionary
-        and call the prettyPrint(your_dict) function.
-
-        `what` is a string with the search tokens, already escaped (e.g. "Ubuntu+Linux")
-        `cat` is the name of a search category in ('all', 'movies', 'tv', 'music', 'games', 'anime', 'software', 'pictures', 'books')
-        """
-
-        # Always set a sleep(3) after each request to the search engine website, otherwise you might get banned by the search engine.
-        sleep(3)
+        # what = what.replace("%20", "+")
+        parser = self.HTMLParser(self.url)
+        current_page = 1
+        while True:
+            url = "{0}".format(
+                self.url,
+            )
+            html = re.sub(r"\s+", " ", retrieve_url(url)).strip()
+            parser.feed(html)
+            if parser.noTorrents:
+                break
+            current_page += 1
+            # Always set a sleep(3) after each request to the search engine website, otherwise you might get banned by the search engine.
+            sleep(3)
