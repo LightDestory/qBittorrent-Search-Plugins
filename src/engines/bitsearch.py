@@ -1,10 +1,9 @@
-# VERSION: 1.1
+# VERSION: 1.2
 # AUTHORS: LightDestory (https://github.com/LightDestory)
 
 import re
 from time import sleep
 from datetime import datetime
-from urllib.parse import quote, unquote
 
 from helpers import retrieve_url
 from novaprinter import prettyPrinter
@@ -62,11 +61,14 @@ class bitsearch(object):
                 )
                 if url_titles:
                     generic_url = "{0}{1}".format(self.url[:-1], url_titles.group(1))
-                    timestamp = int(
-                        datetime.strptime(url_titles.group(5), "%m/%d/%Y").timestamp()
-                    )
+                    try:
+                        timestamp = int(
+                            datetime.strptime(url_titles.group(5), "%m/%d/%Y").timestamp()
+                        )
+                    except (ValueError, OverflowError):
+                        timestamp = -1
                     torrent_data = [
-                        quote(url_titles.group(8)),
+                        url_titles.group(8),
                         url_titles.group(2),
                         url_titles.group(3),
                         url_titles.group(6),
@@ -78,22 +80,21 @@ class bitsearch(object):
             return torrents
 
     def download_torrent(self, download_url):
-        unquoted_magnet = unquote(download_url)
-        print(unquoted_magnet + " " + unquoted_magnet)
+        print(download_url + " " + download_url)
 
     def search(self, what, cat="all"):
         what = what.replace("%20", "+")
         cat = "" if cat == "all" else f"&category={self.supported_categories[cat]}"
         parser = self.HTMLParser(self.url)
         current_page = 1
-        while True:
+        max_pages = 50
+        while current_page <= max_pages:
             url = "{0}search?q={1}&page={2}{3}&sortBy=relevance".format(
                 self.url, what, current_page, cat
             )
-            # Some replacements to format the html source
             html = re.sub(r"\s+", " ", retrieve_url(url)).strip()
             parser.feed(html)
             if parser.noTorrents:
                 break
             current_page += 1
-            sleep(3)  # To avoid hitting the server too hard
+            sleep(3)
