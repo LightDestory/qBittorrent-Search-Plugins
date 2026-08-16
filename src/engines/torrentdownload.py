@@ -1,81 +1,141 @@
-# VERSION: 1.1
+# VERSION: 1.2
 # AUTHORS: LightDestory (https://github.com/LightDestory)
+# CONTRIBUTORS: YoWhatupGee (https://github.com/YoWhatupGee)
 
 import re
+from html import unescape
+from time import sleep
 
 from helpers import retrieve_url
 from novaprinter import prettyPrinter
-from time import sleep
 
 
 class torrentdownload(object):
-    url = "https://www.torrentdownload.info/"
+    url = "https://www.torrentdownload.info"
     name = "TorrentDownload"
+    supported_categories = {
+        "all": "",
+        "anime": "anime",
+        "books": "books",
+        "games": "games",
+        "movies": "movies",
+        "music": "music",
+        "software": "applications",
+        "tv": "tv",
+    }
     max_pages = 10
+    # Delay between page requests, the site throttles aggressive crawling
+    page_delay = 1
+
+    trackers = (
+        "&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce"
+        "&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337%2Fannounce"
+        "&tr=udp%3A%2F%2Fopen.demonii.com%3A1337%2Fannounce"
+        "&tr=udp%3A%2F%2Fopen.stealth.si%3A80%2Fannounce"
+        "&tr=udp%3A%2F%2Fexodus.desync.com%3A6969%2Fannounce"
+        "&tr=udp%3A%2F%2Ftracker.birkenwald.de%3A6969%2Fannounce"
+        "&tr=udp%3A%2F%2Fexplodie.org%3A6969%2Fannounce"
+    )
 
     class HTMLParser:
-        def __init__(self, url):
-            self.url = url
+        # A result row always starts with "<tr><td" (sponsored rows carry a bgcolor attribute)
+        row_re = re.compile(r"<tr><td.+?tt-name.+?</tr>")
+        # Cells are matched individually so that an unexpected value in one of them
+        # cannot silently discard the whole row
+        torrent_re = re.compile(
+            r'href="/(?P<hash>[0-9A-Fa-f]{40})/(?P<slug>[^"]*)">(?P<name>.*?)</a>'
+            r'(?:\s*<span class="smallish">\s*(?:&raquo;|»)\s*(?P<cat>[^<]*)</span>)?'
+            r'.*?<td class="tdnormal">[^<]*</td>'
+            r'\s*<td class="tdnormal">(?P<size>[^<]*)</td>'
+            r'\s*<td class="tdseed">(?P<seeds>[^<]*)</td>'
+            r'\s*<td class="tdleech">(?P<leech>[^<]*)</td>'
+        )
+        tag_re = re.compile(r"<[^>]+>")
+        # "1 - 50 of 1,740 for ..." in the results table header
+        total_re = re.compile(r"<h1>[\d,]+ - [\d,]+ of ([\d,]+) for")
+        # The site labels rows with its own category names
+        category_rules = (
+            ("anime", ("anime",)),
+            ("books", ("book",)),
+            ("movies", ("movie",)),
+            ("tv", ("tv", "television")),
+            ("music", ("music", "audio", "lossless")),
+            ("games", ("game", "xbox", "playstation")),
+            ("software", ("applic", "software")),
+        )
+
+        def __init__(self, engine):
+            self.engine = engine
+            self.seen = set()
+            self.printed = 0
+            self.total = None
             self.pageResSize = 0
 
-        def feed(self, html):
+        def feed(self, html, category="all"):
             self.pageResSize = 0
-            torrents = self.__findTorrents(html)
-            resultSize = len(torrents)
-            if resultSize == 0:
-                return
-            else:
-                self.pageResSize = resultSize
-                count = 0
-            for torrent in range(resultSize):
-                count = count + 1
-                data = {
-                    "link": torrents[torrent][0],
-                    "name": torrents[torrent][1],
-                    "size": torrents[torrent][2],
-                    "seeds": torrents[torrent][3],
-                    "leech": torrents[torrent][4],
-                    "engine_url": self.url,
-                    "desc_link": torrents[torrent][5],
-                }
-                prettyPrinter(data)
-
-        def __findTorrents(self, html):
-            torrents = []
-            trs = re.findall(r"<tr><td.+?tt-name.+?</tr>", html)
-            for tr in trs:
-                # Extract from the A node all the needed information
-                url_titles = re.search(
-                    r".+?href=\"/(.+?)\">(.+?)</a>.+?tdnormal\">([0-9\,\.]+ (TB|GB|MB|KB)).+?tdseed\">([0-9,]+).+?tdleech\">([0-9,]+)",
-                    tr,
+            total = self.total_re.search(html)
+            if total:
+                self.total = int(total.group(1).replace(",", ""))
+            for row in self.row_re.findall(html):
+                torrent = self.torrent_re.search(row)
+                if not torrent:
+                    continue
+                self.pageResSize += 1
+                info_hash = torrent.group("hash").lower()
+                # The same torrent can show up on several pages
+                if info_hash in self.seen:
+                    continue
+                self.seen.add(info_hash)
+                if not self.__matches(torrent.group("cat"), category):
+                    continue
+                desc_link = "{0}/{1}/{2}".format(
+                    self.engine.url, torrent.group("hash"), torrent.group("slug")
                 )
-                if url_titles:
-                    torrent_data = [
-                        "magnet:?xt=urn:btih:{0}&dn=&tr=udp%3A%2F%2Ftracker.torrent.eu.org%3A451%2Fannounce&tr=http%3A%2F%2Ftracker.ipv6tracker.ru%3A80%2Fannounce&tr=udp%3A%2F%2Fretracker.hotplug.ru%3A2710%2Fannounce&tr=https%3A%2F%2Ftracker.fastdownload.xyz%3A443%2Fannounce&tr=https%3A%2F%2Fopentracker.xyz%3A443%2Fannounce&tr=http%3A%2F%2Fopen.trackerlist.xyz%3A80%2Fannounce&tr=udp%3A%2F%2Ftracker.birkenwald.de%3A6969%2Fannounce&tr=https%3A%2F%2Ft.quic.ws%3A443%2Fannounce&tr=https%3A%2F%2Ftracker.parrotsec.org%3A443%2Fannounce&tr=udp%3A%2F%2Ftracker.supertracker.net%3A1337%2Fannounce&tr=http%3A%2F%2Fgwp2-v19.rinet.ru%3A80%2Fannounce&tr=udp%3A%2F%2Fbigfoot1942.sektori.org%3A6969%2Fannounce&tr=udp%3A%2F%2Fcarapax.net%3A6969%2Fannounce&tr=udp%3A%2F%2Fretracker.akado-ural.ru%3A80%2Fannounce&tr=udp%3A%2F%2Fretracker.maxnet.ua%3A80%2Fannounce&tr=udp%3A%2F%2Fbt.dy20188.com%3A80%2Fannounce&tr=http%3A%2F%2F0d.kebhana.mx%3A443%2Fannounce&tr=http%3A%2F%2Ftracker.files.fm%3A6969%2Fannounce&tr=http%3A%2F%2Fretracker.joxnet.ru%3A80%2Fannounce&tr=http%3A%2F%2Ftracker.moxing.party%3A6969%2Fannounce".format(
-                            url_titles.group(1).split("/")[0]
-                        ),
-                        url_titles.group(2)
-                        .replace('<span class="na">', "")
-                        .replace("</span>", ""),
-                        url_titles.group(3).replace(",", ""),
-                        url_titles.group(5).replace(",", ""),
-                        url_titles.group(6).replace(",", ""),
-                        "{0}{1}".format(self.url, url_titles.group(1)),
-                    ]
-                    torrents.append(torrent_data)
-            return torrents
+                prettyPrinter({
+                    "link": "magnet:?xt=urn:btih:{0}&dn={1}{2}".format(
+                        info_hash, torrent.group("slug"), self.engine.trackers
+                    ),
+                    "name": self.__clean(torrent.group("name")),
+                    "size": torrent.group("size").replace(",", "").strip(),
+                    "seeds": self.__count(torrent.group("seeds")),
+                    "leech": self.__count(torrent.group("leech")),
+                    "engine_url": self.engine.url,
+                    "desc_link": desc_link,
+                })
+                self.printed += 1
+
+        def __clean(self, name):
+            return unescape(self.tag_re.sub("", name)).strip()
+
+        def __count(self, value):
+            value = value.replace(",", "").strip()
+            return value if value.isdigit() else "-1"
+
+        def __matches(self, label, category):
+            if category == "all":
+                return True
+            if not label:
+                return False
+            label = label.lower()
+            for name, needles in self.category_rules:
+                if any(needle in label for needle in needles):
+                    return name == category
+            return False
 
     def download_torrent(self, download_url):
+        # Results are magnet links, qBittorrent handles them without a temporary file
         print(download_url + " " + download_url)
 
     def search(self, what, cat="all"):
         what = what.replace("%20", "+")
-        parser = self.HTMLParser(self.url)
-        for currPage in range(1, self.max_pages):
-            url = "{0}search?q={1}&p={2}".format(self.url, what, currPage)
-            # Some replacements to format the html source
+        parser = self.HTMLParser(self)
+        for currPage in range(1, self.max_pages + 1):
+            url = "{0}/search?q={1}&p={2}".format(self.url, what, currPage)
+            # Collapse the whitespace so that the row patterns can rely on a single layout
             html = re.sub(r"\s+", " ", retrieve_url(url)).strip()
-            parser.feed(html)
+            parser.feed(html, cat)
             if parser.pageResSize <= 0:
                 break
-            sleep(3)
+            if parser.total is not None and len(parser.seen) >= parser.total:
+                break
+            sleep(self.page_delay)
