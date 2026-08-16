@@ -1,5 +1,6 @@
-# VERSION: 1.3
+# VERSION: 1.4
 # AUTHORS: LightDestory (https://github.com/LightDestory)
+# CONTRIBUTORS: YoWhatupGee (https://github.com/YoWhatupGee)
 
 import re
 import urllib.parse
@@ -48,12 +49,19 @@ class pirateiro(object):
 
         def __findTorrents(self, html):
             torrents = []
-            links = re.findall(
-                r"<a href=\"(.+?)\".+?<h6.+?>(.+?)</h6>.+?(\d+)</span>.+?(\d+)</span>.+?</a>",
-                html,
-            )
-            for a in links:
-                torrents.append([a[0], a[1], -1, a[2], a[3], a[0]])
+            # The site renders the same results twice, as a table and as a mobile
+            # list, so the search is limited to the table rows to avoid duplicates
+            for row in re.findall(r"<tr[^>]*>(?:(?!</tr>).)*?</tr>", html):
+                a = re.search(
+                    r"<a href=\"([^\"]*?/torrent/\d+)\"><h6[^>]*>(.*?)</h6></a>"
+                    r".*?btn-seed-home[^>]*>(\d+)</span>"
+                    r".*?btn-leech-home[^>]*>(\d+)</span>",
+                    row,
+                )
+                if a:
+                    torrents.append(
+                        [a.group(1), a.group(2), -1, a.group(3), a.group(4), a.group(1)]
+                    )
             return torrents
 
     def download_torrent(self, info):
